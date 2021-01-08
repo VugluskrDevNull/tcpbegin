@@ -27,7 +27,7 @@ int main()
     {
             while ( !(socket->bytesAvailable()))
             {
-            socket->waitForReadyRead(10000);
+              socket->waitForReadyRead(10000);
             }
 
             qDebug() << socket->readAll();
@@ -36,38 +36,38 @@ int main()
 
             while (!( socket->bytesAvailable()))
             {
-            socket->waitForBytesWritten(10000);
+              socket->waitForBytesWritten(10000);
             }
             qDebug() << socket->readAll();
             socket->write( "USER qwert_zaq 8 x : qwert_zaq\n");
 
             while (!( socket->bytesAvailable()))
             {
-            socket->waitForBytesWritten(10000);
+              socket->waitForBytesWritten(10000);
             }
             qDebug() << socket->readAll();
             socket->write("JOIN #RusChat\n");
 
             while (!( socket->bytesAvailable()))
             {
-            socket->waitForBytesWritten(10000);
+              socket->waitForBytesWritten(10000);
             }
             qDebug() << socket->readAll();
             socket->write("PRIVMSG #RusChat : hi from netcat\n");
 
             while (!( socket->bytesAvailable()))
             {
-            socket->waitForBytesWritten(10000);
+             socket->waitForBytesWritten(10000);
             }
            qDebug() << socket->readAll();
            socket->write("PONG irc.lucky.net\n ");
 
            while(socket->bytesAvailable() == 0) {
            socket->waitForReadyRead(100);
-       }
-       socket->close();
-       }
-      return 0;
+     }
+     socket->close();
+     }
+     return 0;
 }
 /***************************************************************************/ //  бот
 
@@ -90,7 +90,7 @@ int main()
             {
             while ( !(socket->bytesAvailable()))
             {
-            socket->waitForReadyRead(10000);
+              socket->waitForReadyRead(10000);
             }
 
             qDebug() << socket->readAll();
@@ -99,65 +99,64 @@ int main()
 
             while ( !(socket->bytesAvailable())) // удалить в ирц
             {                                    //
-            socket->waitForReadyRead(10000);     //
+              socket->waitForReadyRead(10000);     //
             }                                    //
 
         //    while (!( socket->bytesAvailable()))
         //    {
-        //    socket->waitForBytesWritten(10000);
+        //      socket->waitForBytesWritten(10000);
         //    }
             qDebug() << socket->readAll();
             socket->write( "USER qwert_zaq 8 x : qwert_zaq\n");
 
             while ( !(socket->bytesAvailable())) // удалить в ирц
             {                                    //
-            socket->waitForReadyRead(10000);     //
+              socket->waitForReadyRead(10000);     //
             }                                    //
 
          //   while (!(socket->bytesAvailable()))
          //   {
-         //   socket->waitForBytesWritten(10000);
+         //     socket->waitForBytesWritten(10000);
           //  }
             qDebug() << socket->readAll();
             socket->write("JOIN #Kashchenko\n");
 
             while ( !(socket->bytesAvailable())) // удалить в ирц
             {                                    //
-            socket->waitForReadyRead(10000);     //
+              socket->waitForReadyRead(10000);     //
             }                                    //
 
          //   while (!(socket->bytesAvailable()))
          //   {
-         //   socket->waitForBytesWritten(10000);
+         //     socket->waitForBytesWritten(10000);
           //  }
             qDebug() << socket->readAll();
             socket->write("PRIVMSG #Kashchenko : hi from netcat\n");
 
             while ( !(socket->bytesAvailable())) // удалить в ирц
             {                                    //
-            socket->waitForReadyRead(10000);     //
+              socket->waitForReadyRead(10000);     //
             }                                    //
 
          //   while (!(socket->bytesAvailable()))
          //   {
-         //   socket->waitForBytesWritten(10000);
+         //     socket->waitForBytesWritten(10000);
           //  }
            qDebug() << socket->readAll();
            socket->write("PONG irc.lucky.net\n ");
 
            while ( !(socket->bytesAvailable())) // удалить в ирц
            {                                    //
-           socket->waitForReadyRead(10000);     //
+             socket->waitForReadyRead(10000);     //
            }                                    //
 
            while(socket->bytesAvailable() == 0) {
            socket->waitForReadyRead(100);
            }
            socket->close();
-       }
+  }
 
-
-      return 0;
+   return 0;
 }
 ***************************************************************************/ // локал бот
 
