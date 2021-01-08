@@ -22,9 +22,9 @@ int main()
         qDebug() << "Not Connected";
         return 1;
     }
-        qDebug() << "Connected";
-        while (1)
-            {
+    qDebug() << "Connected";
+    while (1)
+    {
             while ( !(socket->bytesAvailable()))
             {
             socket->waitForReadyRead(10000);
@@ -64,11 +64,9 @@ int main()
 
            while(socket->bytesAvailable() == 0) {
            socket->waitForReadyRead(100);
-           }
-           socket->close();
        }
-
-
+       socket->close();
+       }
       return 0;
 }
 /***************************************************************************/ //  бот
