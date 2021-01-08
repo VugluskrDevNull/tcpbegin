@@ -203,6 +203,7 @@ int main()
 }
 */
 
+<<<<<<< HEAD
 /*
 int main()
  {
@@ -293,3 +294,5 @@ int main()
        socket->close();
     }
 */
+=======
+>>>>>>> 99761b0ce597de3d36a28819c22d45a6300f9cd9
