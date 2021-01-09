@@ -13,7 +13,15 @@ using namespace std;
 //  cout << socket->readAll().constData();
 // //const char *QByteArray::data() const
 /***************************************************************************/ //  бот
-//  бот должен отвечать строкой "i hear you" на все сообщения которые идут ему на канале. тоесть все сообщения которые начинаются с "test_bot: "
+
+QTcpSocket * WaitForBytes (QTcpSocket *soc)
+{
+    while ( !(soc->bytesAvailable()))
+    {
+      soc->waitForReadyRead(10000);
+    }
+return  soc;
+}
 
 int main()
 {
@@ -29,49 +37,37 @@ int main()
       }
       qDebug() << "Connected";
 
-      while ( !(socket->bytesAvailable()))
-      {
-        socket->waitForReadyRead(10000);
-      }
+      WaitForBytes (socket);
 
       cout << socket->readAll().constData();
       socket->write( "NICK test_bot\n ");
       socket->write( "PING\n");
       socket->write( "CODEPAGE utf8\n");
-      while (!( socket->bytesAvailable()))
-      {
-        socket->waitForReadyRead(10000);
-      }
+
+      WaitForBytes (socket);
+
       cout << socket->readAll().constData();
       socket->write( "USER qwert_zaq 8 x : qwert_zaq\n");
 
-      while (!( socket->bytesAvailable()))
-      {
-        socket->waitForReadyRead(10000);
-      }
+      WaitForBytes (socket);
+
       cout << socket->readAll().constData();
       socket->write("JOIN #ruschat \n");
 
-      while (!( socket->bytesAvailable()))
-      {
-        socket->waitForReadyRead(10000);
-      }
+      WaitForBytes (socket);
+
       cout << socket->readAll().constData();
       socket->write("PRIVMSG #ruschat  : hi from netcat\n");
 
-      while (!( socket->bytesAvailable()))
-      {
-        socket->waitForReadyRead(10000);
-      }
+      WaitForBytes (socket);
+
       cout << socket->readAll().constData();
       socket->write("PONG irc.lucky.net\n ");
 
       while (1)
       {
-          while ( !(socket->bytesAvailable()))
-          {
-            socket->waitForReadyRead(10000);
-          }
+          WaitForBytes (socket);
+
           QString c = socket->readAll();
           qDebug() << c;
           QString cc = c;
@@ -85,7 +81,6 @@ int main()
               socket->waitForBytesWritten();
           }
           if (cc.indexOf("PING", 0) != -1)  socket->write("PONG irc.lucky.net\n ");
-
      }
       socket->close();
 
