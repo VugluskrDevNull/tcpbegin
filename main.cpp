@@ -13,6 +13,8 @@ using namespace std;
 //  cout << socket->readAll().constData();
 // //const char *QByteArray::data() const
 /***************************************************************************/ //  бот
+//  бот должен отвечать строкой "i hear you" на все сообщения которые идут ему на канале. тоесть все сообщения которые начинаются с "test_bot: "
+
 int main()
 {
       QTcpSocket *socket;
@@ -26,6 +28,7 @@ int main()
         return 1;
       }
       qDebug() << "Connected";
+
       while ( !(socket->bytesAvailable()))
       {
         socket->waitForReadyRead(10000);
@@ -63,15 +66,66 @@ int main()
       cout << socket->readAll().constData();
       socket->write("PONG irc.lucky.net\n ");
 
-      while(socket->bytesAvailable() == 0) {
-      socket->waitForReadyRead(100);
+   /*   label1 :
+      socket->write("i hear you\n");
+      socket->waitForBytesWritten();  */
+
+      while (1)
+      {
+          while ( !(socket->bytesAvailable()))
+          {
+            socket->waitForReadyRead(10000);
+          }
+          QString c = socket->readAll();
+          QString cc=c;
+          qDebug() << c;
+          QString d = "you type: " + c;
+          int j = 0;
+          if (c.indexOf("!quit", j)!= -1) break;
+          while ( !(socket->bytesAvailable()))
+          {
+            socket->waitForReadyRead(10000);
+          }
+          if (cc.indexOf("test_bot", j)!= -1)
+          {
+              socket->write("i hear you\n");
+              socket->waitForBytesWritten();
+          }
+
+     //    if (cc.indexOf("test_bot", j)!= -1) goto label1;
       }
       socket->close();
 
       return 0;
 }
 /***************************************************************************/ //  бот
+/*
+QString str = "We must be <b>bold</b>, very <b>bold</b>";
+int j = 0;
 
+while ((j = str.indexOf("<b>", j)) != -1) {            // -1 if not found else position
+    qDebug() << "Found <b> tag at index position" << j;
+    ++j;
+}
+*/
+/*
+int main ()
+{
+
+QString str = "We must be <b>bold</b>, very <b>bold</b>";
+
+
+while ((j = str.indexOf("<b>", j)) != -1) {
+    qDebug() << "Found <b> tag at index position" << j;
+    ++j;
+}
+
+    QString str = "We must be <b>bold</b>, very <b>bold</b!quit>";
+    int j = 0;
+    if (str.indexOf("!quit", j)!= -1) cout<<"ok";
+    else cout<<"bad";
+}
+*/
 
 /*
 int main()
