@@ -37,7 +37,7 @@ int main()
       cout << socket->readAll().constData();
       socket->write( "NICK test_bot\n ");
       socket->write( "PING\n");
-      socket->write( "CODEPAGE UTF-8\n");
+      socket->write( "CODEPAGE utf8\n");
       while (!( socket->bytesAvailable()))
       {
         socket->waitForReadyRead(10000);
@@ -74,15 +74,17 @@ int main()
           }
           QString c = socket->readAll();
           qDebug() << c;
+          QString cc = c;
           QString d = "you type: " + c;
           int j = 0;
           if (c.indexOf("!quit", j)!= -1)
           break;
-          if (c.indexOf("test_bot", j)!= -1)
+          if (cc.indexOf("PRIVMSG #ruschat :test_bot", 0) != -1)
           {
               socket->write("PRIVMSG #ruschat  : i hear you\n");
               socket->waitForBytesWritten();
           }
+          if (cc.indexOf("PING", 0) != -1)  socket->write("PONG irc.lucky.net\n ");
 
      }
       socket->close();
