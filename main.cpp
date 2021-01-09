@@ -14,15 +14,16 @@ using namespace std;
 // //const char *QByteArray::data() const
 /***************************************************************************/ //  бот
 
-QTcpSocket * WaitForBytes (QTcpSocket *soc)
+const char * BlockedRead (QTcpSocket *soc)
 {
-    while ( !(soc->bytesAvailable()))
-    {
-      soc->waitForReadyRead(10000);
-    }
-return  soc;
+  while ( !(soc->bytesAvailable()))
+  {
+    soc->waitForReadyRead(10000);
+  }
+  cout<<soc->readAll().constData();
+  return soc->readAll().constData();
 }
-
+// BlockedRead() и cout << socket->readAll().constData(); туда можешь вснуть. ну сначала readAll, потом cout, а потом return прочитанное
 int main()
 {
       QTcpSocket *socket;
@@ -37,37 +38,30 @@ int main()
       }
       qDebug() << "Connected";
 
-      WaitForBytes (socket);
-
-      cout << socket->readAll().constData();
+      BlockedRead (socket);
       socket->write( "NICK test_bot\n ");
       socket->write( "PING\n");
-      socket->write( "CODEPAGE utf8\n");
+ //     socket->write( "CODEPAGE utf8\n");   // не работает
 
-      WaitForBytes (socket);
-
-      cout << socket->readAll().constData();
+      BlockedRead (socket);
       socket->write( "USER qwert_zaq 8 x : qwert_zaq\n");
 
-      WaitForBytes (socket);
-
-      cout << socket->readAll().constData();
+      BlockedRead (socket);
       socket->write("JOIN #ruschat \n");
 
-      WaitForBytes (socket);
-
-      cout << socket->readAll().constData();
+      BlockedRead (socket);
       socket->write("PRIVMSG #ruschat  : hi from netcat\n");
 
-      WaitForBytes (socket);
-
-      cout << socket->readAll().constData();
+      BlockedRead (socket);
       socket->write("PONG irc.lucky.net\n ");
 
       while (1)
       {
-          WaitForBytes (socket);
-
+          while ( !(socket->bytesAvailable()))
+          {
+            socket->waitForReadyRead(10000);
+          }
+                                                                      // тут не было cout << socket->readAll().constData();
           QString c = socket->readAll();
           qDebug() << c;
           QString cc = c;
