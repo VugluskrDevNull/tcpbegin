@@ -18,7 +18,7 @@ const char * BlockedRead (QTcpSocket *soc)
 {
      while ( !(soc->bytesAvailable()))
      {
-         soc->waitForReadyRead(10000);
+        soc->waitForReadyRead(10000);
      }
      const char * ch = soc->readAll().constData();
      cout<<ch;
@@ -34,8 +34,8 @@ int main()
   //  socket->connectToHost("127.0.0.1", 4567);
       if (!socket->waitForConnected(1000))
       {
-        qDebug() << "Not Connected";
-        return 1;
+         qDebug() << "Not Connected";
+         return 1;
       }
       qDebug() << "Connected";
 
@@ -59,19 +59,18 @@ int main()
       while (1)
       {
 
-          while ( !(socket->bytesAvailable()))           // с заменой на ф-цию не пашут 2 условия
+          while ( !(socket->bytesAvailable()))
           {
-            socket->waitForReadyRead(10000);
+             socket->waitForReadyRead(10000);
           }
 
-       //   BlockedRead (socket);   // не работ отзыв пинг квит
           QString c = socket->readAll();
           qDebug() << c;
           QString cc = c;
           QString d = "you type: " + c;
           int j = 0;
           if (c.indexOf("!quit", j)!= -1)
-          break;
+              break;
           if (cc.indexOf("PRIVMSG #ruschat :test_bot", 0) != -1)
           {
               socket->write("PRIVMSG #ruschat  : i hear you\n");
@@ -79,7 +78,7 @@ int main()
           }
           if (cc.indexOf("PING", 0) != -1)  socket->write("PONG irc.lucky.net\n ");
      }
-      socket->close();
+     socket->close();
 
       return 0;
 }
