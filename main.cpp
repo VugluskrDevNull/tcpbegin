@@ -16,14 +16,15 @@ using namespace std;
 
 const char * BlockedRead (QTcpSocket *soc)
 {
-  while ( !(soc->bytesAvailable()))
-  {
-    soc->waitForReadyRead(10000);
-  }
-  cout<<soc->readAll().constData();
-  return soc->readAll().constData();
+     while ( !(soc->bytesAvailable()))
+     {
+         soc->waitForReadyRead(10000);
+     }
+     const char * ch = soc->readAll().constData();
+     cout<<ch;
+     return ch;
 }
-// BlockedRead() и cout << socket->readAll().constData(); туда можешь вснуть. ну сначала readAll, потом cout, а потом return прочитанное
+
 int main()
 {
       QTcpSocket *socket;
@@ -57,11 +58,13 @@ int main()
 
       while (1)
       {
-          while ( !(socket->bytesAvailable()))
+
+          while ( !(socket->bytesAvailable()))           // с заменой на ф-цию не пашут 2 условия
           {
             socket->waitForReadyRead(10000);
           }
-                                                                      // тут не было cout << socket->readAll().constData();
+
+       //   BlockedRead (socket);   // не работ отзыв пинг квит
           QString c = socket->readAll();
           qDebug() << c;
           QString cc = c;
