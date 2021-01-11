@@ -58,13 +58,8 @@ int main()
 
       while (1)
       {
-
-          while ( !(socket->bytesAvailable()))
-          {
-             socket->waitForReadyRead(10000);
-          }
-
-          QString c = socket->readAll();
+          const char * p = BlockedRead (socket);
+          QString c=p;
           qDebug() << c;
           QString cc = c;
           QString d = "you type: " + c;
@@ -76,7 +71,8 @@ int main()
               socket->write("PRIVMSG #ruschat  : i hear you\n");
               socket->waitForBytesWritten();
           }
-          if (cc.indexOf("PING", 0) != -1)  socket->write("PONG irc.lucky.net\n ");
+          if (cc.indexOf("PING", 0) != -1)
+              socket->write("PONG irc.lucky.net\n ");
      }
      socket->close();
 
