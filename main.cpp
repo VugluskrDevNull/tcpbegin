@@ -42,10 +42,12 @@ int main()
       BlockedRead (socket);
       socket->write( "NICK test_bot\n ");
       socket->write( "PING\n");
- //     socket->write( "CODEPAGE utf8\n");   // не работает
 
       BlockedRead (socket);
       socket->write( "USER qwert_zaq 8 x : qwert_zaq\n");
+
+      BlockedRead (socket);
+      socket->write( "CODEPAGE UTF-8\n");
 
       BlockedRead (socket);
       socket->write("JOIN #ruschat \n");
@@ -53,25 +55,20 @@ int main()
       BlockedRead (socket);
       socket->write("PRIVMSG #ruschat  : hi from netcat\n");
 
-      BlockedRead (socket);
-      socket->write("PONG irc.lucky.net\n ");
-
       while (1)
       {
-          const char * p = BlockedRead (socket);
-          QString c=p;
+          QString c = BlockedRead (socket);
           qDebug() << c;
-          QString cc = c;
           QString d = "you type: " + c;
           int j = 0;
           if (c.indexOf("!quit", j)!= -1)
               break;
-          if (cc.indexOf("PRIVMSG #ruschat :test_bot", 0) != -1)
+          if (c.indexOf("PRIVMSG #ruschat :test_bot", 0) != -1)
           {
               socket->write("PRIVMSG #ruschat  : i hear you\n");
               socket->waitForBytesWritten();
           }
-          if (cc.indexOf("PING", 0) != -1)
+          if (c.indexOf("PING", 0) != -1)
               socket->write("PONG irc.lucky.net\n ");
      }
      socket->close();
