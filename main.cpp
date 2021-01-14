@@ -72,15 +72,14 @@ void ircbot_loop(QTcpSocket *soc)
         QString c = BlockedRead(soc);
         qDebug() << c;
         QString d = "you type: " + c;
-        int j = 0;
-        if (c.indexOf("!quit", j)!= -1)
+        if (c.indexOf("!quit", 0)!= -1)
             ircbot_disconnect(soc);
         if (c.indexOf("PRIVMSG #ruschat :test_bot", 0) != -1)
         {
             soc->write("PRIVMSG #ruschat  : i hear you\n");
             soc->waitForBytesWritten();
         }
-        if (c.indexOf("PING", 0) != -1)
+        if (c.indexOf("PING", 0)!= -1)
             soc->write("PONG irc.lucky.net\n ");
    }
 }
@@ -99,6 +98,7 @@ int main()
 }
 
 /*************************************************************************** //  бот начало
+
 const char * BlockedRead (QTcpSocket *soc)
 {
      while ( !(soc->bytesAvailable()))
