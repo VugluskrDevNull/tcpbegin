@@ -13,10 +13,9 @@ using namespace std;
 //  cout << socket->readAll().constData();
 // //const char *QByteArray::data() const
 /***************************************************************************/ //  бот
-
-const char * BlockedRead (QTcpSocket *soc)
+const char * BlockedRead(QTcpSocket *soc)
 {
-     while ( !(soc->bytesAvailable()))
+     while (!(soc->bytesAvailable()))
      {
         soc->waitForReadyRead(10000);
      }
@@ -25,70 +24,77 @@ const char * BlockedRead (QTcpSocket *soc)
      return ch;
 }
 
-bool ircbot_connect( QTcpSocket *soc)
+bool ircbot_connect(QTcpSocket *soc)
 {
     soc->connectToHost("62.149.7.206", 6660);
 //    soc->connectToHost("127.0.0.1", 4567);
     if (!soc->waitForConnected(1000))
     {
        qDebug() << "Not Connected";
-       return 1;
+       return 0;
     }
     qDebug() << "Connected";
-    return  0;
+    return  1;
 }
+
 void ircbot_register(QTcpSocket *soc)
 {
-    BlockedRead (soc);
-    soc->write( "NICK test_bot\n ");
-    soc->write( "PING\n");
-    BlockedRead (soc);
-    soc->write( "USER qwert_zaq 8 x : qwert_zaq\n");
-
+    BlockedRead(soc);
+    soc->write("NICK test_bot\n ");
+    soc->write("PING\n");
+    BlockedRead(soc);
+    soc->write("USER qwert_zaq 8 x : qwert_zaq\n");
 }
 
-void ircbot_codepage (QTcpSocket *soc)
+void ircbot_codepage(QTcpSocket *soc)
 {
-    BlockedRead (soc);
-    soc->write( "CODEPAGE UTF-8\n");
+    BlockedRead(soc);
+    soc->write("CODEPAGE UTF-8\n");
 }
 
 void ircbot_join(QTcpSocket *soc)
 {
-    BlockedRead (soc);
+    BlockedRead(soc);
     soc->write("JOIN #ruschat \n");
-    BlockedRead (soc);
+    BlockedRead(soc);
     soc->write("PRIVMSG #ruschat  : hi from netcat\n");
+}
+
+void ircbot_disconnect(QTcpSocket *soc)
+{
+    soc->close();
+}
+
+void ircbot_loop(QTcpSocket *soc)
+{
+    while (1)
+    {
+        QString c = BlockedRead(soc);
+        qDebug() << c;
+        QString d = "you type: " + c;
+        int j = 0;
+        if (c.indexOf("!quit", j)!= -1)
+            ircbot_disconnect(soc);
+        if (c.indexOf("PRIVMSG #ruschat :test_bot", 0) != -1)
+        {
+            soc->write("PRIVMSG #ruschat  : i hear you\n");
+            soc->waitForBytesWritten();
+        }
+        if (c.indexOf("PING", 0) != -1)
+            soc->write("PONG irc.lucky.net\n ");
+   }
 }
 
 int main()
 {
       QTcpSocket *socket;
       socket = new QTcpSocket(NULL);
-      if (ircbot_connect(socket))
+      if (!(ircbot_connect(socket)))
          return  1;
       ircbot_register(socket);
-      ircbot_codepage (socket);
+      ircbot_codepage(socket);
       ircbot_join(socket);
-
-      while (1)
-      {
-          QString c = BlockedRead (socket);
-          qDebug() << c;
-          QString d = "you type: " + c;
-          int j = 0;
-          if (c.indexOf("!quit", j)!= -1)
-              break;
-          if (c.indexOf("PRIVMSG #ruschat :test_bot", 0) != -1)
-          {
-              socket->write("PRIVMSG #ruschat  : i hear you\n");
-              socket->waitForBytesWritten();
-          }
-          if (c.indexOf("PING", 0) != -1)
-              socket->write("PONG irc.lucky.net\n ");
-     }
-     socket->close();
-
+      ircbot_loop(socket);
       return 0;
 }
 
