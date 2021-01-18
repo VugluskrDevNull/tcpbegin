@@ -5,7 +5,183 @@
 #include  <QAbstractSocket>
 using namespace std;
 
-/***************************************************************************/ //  бот
+
+
+/***********************************************************************************/ // бот последн нерабоч
+#define server "62.149.7.206"
+#define port 6660
+#define channel "#ruschat"
+
+QString hiq = "PRIVMSG "+QString (channel)+"  : hi from netcat\n";
+const char * hich= hiq.toLocal8Bit().constData();
+
+QString joiq = "JOIN "+QString (channel)+"\n";
+const char * joich = joiq.toLocal8Bit().constData();
+
+QString inchanq = "PRIVMSG "+QString (channel)+"\n";
+const char * inchanch = inchanq.toLocal8Bit().constData();  // без двоеточий
+
+QString inchanq2 = "PRIVMSG "+QString (channel)+" :\n ";
+const char * inchanch2 = inchanq2.toLocal8Bit().constData();  // с двоеточиями
+
+const char * BlockedRead(QTcpSocket *soc)
+{
+     while (!(soc->bytesAvailable()))
+     {
+        soc->waitForReadyRead(10000);
+     }
+     const char * ch = soc->readAll().constData();
+     cout<<ch;
+     return ch;
+}
+
+bool ircbot_connect(QTcpSocket *soc)
+{
+    soc->connectToHost(server, port);
+//    soc->connectToHost("127.0.0.1", 4567);
+    if (!soc->waitForConnected(1000))
+    {
+       qDebug() << "Not Connected";
+       return 0;
+    }
+    qDebug() << "Connected";
+    return  1;
+}
+
+void ircbot_register(QTcpSocket *soc, QString dn )
+{
+    BlockedRead(soc);
+    QString h = "NICK "+dn+'\n';
+    const  char * n = h.toLocal8Bit().constData();
+    soc->write(n);
+    soc->write("PING\n");
+    BlockedRead(soc);
+    soc->write("USER qwert_zaq 8 x : qwert_zaq\n");
+}
+
+void ircbot_codepage(QTcpSocket *soc)
+{
+    BlockedRead(soc);
+    soc->write("CODEPAGE UTF-8\n");
+}
+
+void ircbot_join(QTcpSocket *soc)
+{
+    BlockedRead(soc);
+    soc->write(joich);
+    BlockedRead(soc);
+    soc->write(hich);
+}
+
+void ircbot_disconnect(QTcpSocket *soc)
+{
+    soc->close();
+}
+
+QString ircbot_rename( QString oldn, QTcpSocket *soc, const char * ch)
+ {
+    QString str(ch);
+    QStringList list2 = str.split(QLatin1Char(':'), Qt::SkipEmptyParts);
+    QString head = list2[0];
+    QString msg = list2[1];
+    if ((head.indexOf(inchanch , 0) != -1) && (msg.startsWith("!nick")))
+    {
+        msg = msg.remove(0, 5);
+        msg= msg.simplified();
+        if (msg.contains(QRegExp("[^a-zA-Z_-/d]"))) // тут ошибка, так как в str что-то еще кроме букв от 'a' до 'z', 'A' до 'Z', '_' и '-'
+        {
+              qDebug()<<"error nick\n";
+        }
+        else
+        {
+            QString h = "NICK "+msg+'\n';
+            const  char * n = h.toLocal8Bit().constData();
+            soc->write(n);
+            QString s = BlockedRead(soc);
+             if (s.indexOf("Nickname is already in use" , 0) != -1)
+            {
+                return oldn;
+            }
+            return msg;
+        }
+    }
+
+}
+
+void ircbot_loop(QTcpSocket *soc, QString dn)
+{
+    while (1)
+    {
+        QString c = BlockedRead(soc);
+        qDebug() << c;
+        QString d = "you type: " + c;
+        if (c.indexOf("!quit", 0)!= -1)
+            ircbot_disconnect(soc);
+        if ((c.indexOf(inchanch2, 0) != -1) && (c.indexOf(dn , 0) != -1))
+        {
+            soc->write("PRIVMSG #ruschat  : i hear you\n");
+            soc->waitForBytesWritten();
+        }
+        if (c.indexOf("PING", 0)!= -1)
+            soc->write("PONG irc.lucky.net\n ");
+        if ((c.indexOf(inchanch2, 0) != -1) && (c.indexOf("!nick" , 0) != -1))
+        {
+            char const* ch = c.toLocal8Bit().constData();
+            dn = ircbot_rename(dn, soc, ch);
+        }
+    }
+}
+
+int main()
+{
+      QString defname ="test_bot";
+      QTcpSocket *socket;
+      socket = new QTcpSocket(NULL);
+      if (!(ircbot_connect(socket)))
+         return  1;
+      ircbot_register(socket, defname);
+      ircbot_codepage(socket);
+      ircbot_join(socket);
+      ircbot_loop(socket, defname );
+      return 0;
+}
+
+
+/***********************************************************************************/ // бот последн нерабоч
+/*
+#define channel "#ruschat"
+int main ()
+{
+
+ //   "JOIN #ruschat \n"
+ //   "PRIVMSG #ruschat  : hi from netcat\n"
+ //   "PRIVMSG #ruschat"
+ //   "PRIVMSG #ruschat :"
+ //   "PRIVMSG #ruschat  : i hear you\n"
+ //   "PRIVMSG #ruschat :"
+
+
+QString hiq = "PRIVMSG "+QString (channel)+"  : hi from netcat\n";
+const char * hich= hiq.toLocal8Bit().constData();
+cout<<"PRIVMSG #ruschat  : hi from netcat\n";
+cout<<hich;
+
+QString joiq = "JOIN "+QString (channel)+"\n";
+const char * joich = joiq.toLocal8Bit().constData();
+cout<<"JOIN #ruschat \n";
+cout<<joich;
+QString inchanq = "PRIVMSG "+QString (channel)+"\n";
+const char * inchanch = inchanq.toLocal8Bit().constData();  // без двоеточий
+cout<<"PRIVMSG #ruschat"<<endl;
+cout<<inchanch;
+
+QString inchanq2 = "PRIVMSG "+QString (channel)+" :\n ";
+const char * inchanch2 = inchanq2.toLocal8Bit().constData();  // с двоеточиями
+cout<<"PRIVMSG #ruschat :"<<endl;
+cout<<inchanch2<<endl;
+}
+*/
+/*************************************************************************** //  бот бот посл рабоч
 
 const char * BlockedRead(QTcpSocket *soc)
 {
@@ -128,8 +304,7 @@ int main()
       ircbot_loop(socket, defname );
       return 0;
 }
-
-
+***************************************************************************/ //  бот посл рабоч
 
 /************************************************************************** // рэгэксп
 int main ()
@@ -151,38 +326,8 @@ int main ()
       qDebug()<<rx2.exactMatch("README.txt")<<endl;        // возвращает true
       qDebug()<<rx2.exactMatch("welcome.txt.bak")<<endl;   // возвращает false
 */
-    /*
-    QString c="dfdfdgfgfg PRIVMSG #ruschat :!nick qwer ";
-    QString dn;
-    if ((c.startsWith("PRIVMSG #ruschat :")) && (c.startsWith("!nick")))
-      {
-        cout<<"find";
-        QString newn;
-         int j=0;
-         for (int v = 0; v < c.length(); v++)
-         {
-            if (c[v]=='k' && c[v-1]=='c' && c[v-2]=='i' && c[v-3]=='n' && c[v-4]== '!')
-            cout<<"number of c[v] = "<<v<<endl;
-            for (int k = v; k < c.length(); k++)
-            {
-              if (c[k]!=" ")
-              {
-                 newn[j] = c[k];
-                 j++;
-              }
-              dn = newn;
-              QString h = "NICK "+dn+'\n';
-              const  char * n = h.toLocal8Bit().constData();
-             qDebug()<<h;
-            }
 
-         }
-       }
-     cout<<"not found";
-     */
-/*
-}
-************************************************************/
+/************************************************************/
 
 /****
 int main()
