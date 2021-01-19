@@ -5,24 +5,17 @@
 #include  <QAbstractSocket>
 using namespace std;
 
-
-
 /***********************************************************************************/ // бот последн нерабоч
+/*
 #define server "62.149.7.206"
 #define port 6660
 #define channel "#ruschat"
 
-QString hiq = "PRIVMSG "+QString (channel)+"  : hi from netcat\n";
-const char * hich= hiq.toLocal8Bit().constData();
-
-QString joiq = "JOIN "+QString (channel)+"\n";
-const char * joich = joiq.toLocal8Bit().constData();
-
-QString inchanq = "PRIVMSG "+QString (channel)+"\n";
-const char * inchanch = inchanq.toLocal8Bit().constData();  // без двоеточий
-
-QString inchanq2 = "PRIVMSG "+QString (channel)+" :\n ";
-const char * inchanch2 = inchanq2.toLocal8Bit().constData();  // с двоеточиями
+#define IRCBOT_CHANNEL "#ruschat"
+const char* msg_greetings = "PRIVMSG " IRCBOT_CHANNEL ": hi from netcat\n";
+const char * joich = "JOIN " IRCBOT_CHANNEL "\n";
+const char * inchanch = "PRIVMSG " IRCBOT_CHANNEL "\n";       // без двоеточий
+const char * inchanch2 = "PRIVMSG " IRCBOT_CHANNEL " :\n ";      // с двоеточиями
 
 const char * BlockedRead(QTcpSocket *soc)
 {
@@ -70,7 +63,7 @@ void ircbot_join(QTcpSocket *soc)
     BlockedRead(soc);
     soc->write(joich);
     BlockedRead(soc);
-    soc->write(hich);
+    soc->write(msg_greetings);
 }
 
 void ircbot_disconnect(QTcpSocket *soc)
@@ -146,9 +139,9 @@ int main()
       return 0;
 }
 
-
+*/
 /***********************************************************************************/ // бот последн нерабоч
-/*
+
 #define channel "#ruschat"
 int main ()
 {
@@ -160,27 +153,25 @@ int main ()
  //   "PRIVMSG #ruschat  : i hear you\n"
  //   "PRIVMSG #ruschat :"
 
+#define IRCBOT_CHANNEL "#ruschat"
+const char* msg_greetings = "PRIVMSG " IRCBOT_CHANNEL ": hi from netcat\n";
+const char * joich = "JOIN " IRCBOT_CHANNEL "\n";
+const char * inchanch = "PRIVMSG " IRCBOT_CHANNEL "\n";       // без двоеточий
+const char * inchanch2 = "PRIVMSG " IRCBOT_CHANNEL " :\n ";      // с двоеточиями
 
-QString hiq = "PRIVMSG "+QString (channel)+"  : hi from netcat\n";
-const char * hich= hiq.toLocal8Bit().constData();
 cout<<"PRIVMSG #ruschat  : hi from netcat\n";
-cout<<hich;
+cout<<msg_greetings;
 
-QString joiq = "JOIN "+QString (channel)+"\n";
-const char * joich = joiq.toLocal8Bit().constData();
 cout<<"JOIN #ruschat \n";
 cout<<joich;
-QString inchanq = "PRIVMSG "+QString (channel)+"\n";
-const char * inchanch = inchanq.toLocal8Bit().constData();  // без двоеточий
+
 cout<<"PRIVMSG #ruschat"<<endl;
 cout<<inchanch;
 
-QString inchanq2 = "PRIVMSG "+QString (channel)+" :\n ";
-const char * inchanch2 = inchanq2.toLocal8Bit().constData();  // с двоеточиями
 cout<<"PRIVMSG #ruschat :"<<endl;
 cout<<inchanch2<<endl;
 }
-*/
+
 /*************************************************************************** //  бот бот посл рабоч
 
 const char * BlockedRead(QTcpSocket *soc)
