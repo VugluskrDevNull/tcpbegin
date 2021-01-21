@@ -7,15 +7,15 @@ using namespace std;
 
 char SERVER[]= "62.149.7.206";
 int PORT = 6660;
-QString NAME ="test_bot";
-QString IRCBOT_CHANNEL = "#ruschat";
 
-QString msg_greet = "PRIVMSG " +IRCBOT_CHANNEL+ " :hi from netcat\n";
-const char * msg_greetings = msg_greet.toLocal8Bit().constData();
-QString  joiq = "JOIN " + IRCBOT_CHANNEL + "\n";
-const char * joich = joiq.toLocal8Bit().constData();
-QString inchanq = "PRIVMSG "+ IRCBOT_CHANNEL;
-const char * inchanch = inchanq.toLocal8Bit().constData();
+    QString NAME ="test_bot";
+    QString IRCBOT_CHANNEL = "#ruschat";
+    QString  joiq = "JOIN " + IRCBOT_CHANNEL + "\n";
+    const char * joich = joiq.toLocal8Bit().constData();
+    QString inchanq = "PRIVMSG "+ IRCBOT_CHANNEL;
+    const char * inchanch = inchanq.toLocal8Bit().constData();
+    QString msg_greet = "PRIVMSG " +IRCBOT_CHANNEL+ " :hi from netcat\n";
+    const char * msg_greetings = msg_greet.toLocal8Bit().constData();
 
 const char * BlockedRead(QTcpSocket *soc)
 {
@@ -99,7 +99,6 @@ QString ircbot_rename( QString oldn, QTcpSocket *soc, const char * ch)
             return msg;
         }
     }
-
 }
 
 void ircbot_loop(QTcpSocket *soc, QString dn)
@@ -141,3 +140,31 @@ int main()
       return 0;
 }
 
+/*
+int main()
+{
+
+    #define IRCBOT_CHANNEL "#ruschat"                                               //old
+    const char* msg_greetings = "PRIVMSG " IRCBOT_CHANNEL " :hi from netcat\n";     //old
+    const char * joich = "JOIN " IRCBOT_CHANNEL "\n";                               //old
+    const char * inchanch = "PRIVMSG " IRCBOT_CHANNEL;                               //old
+   cout<<msg_greetings;
+   cout<<joich;
+   cout<<inchanch<<endl;
+
+    QString NAME ="test_bot";
+    QString IRCBOT_CHANNEL_2 = "#ruschat";
+    QString  joiq = "JOIN " + IRCBOT_CHANNEL_2 + "\n";
+    const char * joich_2 = joiq.toLocal8Bit().constData();
+    cout<<joich_2;
+    QString inchanq_2 = "PRIVMSG "+ IRCBOT_CHANNEL_2;
+    const char * inchanch_2 = inchanq_2.toLocal8Bit().constData();
+    cout<<inchanch_2<<endl;
+    QString msg_greet = "PRIVMSG " +IRCBOT_CHANNEL_2+ " :hi from netcat\n";
+    const char * msg_greetings_2 = msg_greet.toLocal8Bit().constData();
+    cout<<msg_greetings_2;
+    QString answq = "PRIVMSG " + IRCBOT_CHANNEL_2 + " : i hear you\n";
+    const char * answch = answq.toLocal8Bit().constData();
+    cout<<answch<<endl;
+}
+*/
