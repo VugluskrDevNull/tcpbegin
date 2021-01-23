@@ -2,9 +2,12 @@
 #include <iostream>
 #include <QTcpSocket>
 #include <QThread>
+#include <QFile>
 #include  <QAbstractSocket>
+#include <fstream>
 using namespace std;
 
+    QFile file("bot_data.txt");
     int port = 6667;
     QString server = "irc.lucky.net";      // "62.149.7.206";  "irc.lucky.net"  "chat.freenode.net"
     QString name ="test_bot";
@@ -97,6 +100,12 @@ QString ircbot_rename( QString oldn, QTcpSocket *soc, const char * ch)
                 return oldn;
             }
             name = msg;
+            if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+               file.write(name.toLatin1());
+            }
+            else
+                cout<<"cant open file bot_data\n";
+            file.close();
             return msg;
         }
     }
@@ -132,6 +141,18 @@ void ircbot_loop(QTcpSocket *soc, QString dn)
 
 int main()
 {
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning("Cannot open file for reading");
+        if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+           qDebug()<<"name is "<<name<<endl;
+           file.write(name.toLatin1());
+         }
+      }
+      QTextStream in(&file);
+      QString line = in.readLine();
+      qDebug()<<"line is "<<line<<endl;
+      name = line;
+      file.close();
       QTcpSocket *socket;
       socket = new QTcpSocket(NULL);
       if (!(ircbot_connect(socket)))
