@@ -5,17 +5,13 @@
 #include  <QAbstractSocket>
 using namespace std;
 
-char server []= "185.30.166.38";                                      // "62.149.7.206";
-int port = 6667;
-
+    int port = 6667;
+    QString server = "irc.lucky.net";      // "62.149.7.206";  "irc.lucky.net"  "chat.freenode.net"
     QString name ="test_bot";
     QString ircbot_channel = "#ruschat";
     QString  joiq = "JOIN " + ircbot_channel + "\n";
-    const char * joich = joiq.toLatin1().constData();
-    QString inchanq = "PRIVMSG "+ ircbot_channel;
-    const char * inchanch = inchanq.toLatin1().constData();
-    QString msg_greet = "PRIVMSG " + ircbot_channel + " :hi from netcat\n";
-    const char * msg_greetings = msg_greet.toLatin1().constData();
+    QString inchan = "PRIVMSG "+ ircbot_channel;
+    QString msg_greetings = "PRIVMSG " + ircbot_channel + " :hi from netcat\n";
 
 const char * ircbot_read_blocked(QTcpSocket *soc)
 {
@@ -30,8 +26,8 @@ const char * ircbot_read_blocked(QTcpSocket *soc)
 
 bool ircbot_connect(QTcpSocket *soc)
 {
-    soc->connectToHost(server, port);
-//     soc->connectToHost("127.0.0.1", 4567);
+    soc->connectToHost(server.toLatin1().constData(), port);
+ //    soc->connectToHost("127.0.0.1", 4567);                                 // lochost
     if (!soc->waitForConnected(1000))
     {
        qDebug() << "Not Connected";
@@ -43,18 +39,16 @@ bool ircbot_connect(QTcpSocket *soc)
 
 void ircbot_send(QTcpSocket *soc, const  char * ch)
 {
-   //cout<<"i send - "<<ch<<endl;
-    qDebug()<<"i send - "<<ch<<endl;
+//    cout<<"i send (cout) - "<<ch<<endl;
+    qDebug()<<"i send (qDebug() ) - "<<ch<<endl;
     soc->write(ch);
 }
-
 
 void ircbot_register(QTcpSocket *soc, QString dn )
 {
     ircbot_read_blocked(soc);
     QString h = "NICK "+dn+'\n';
-    const  char * n = h.toLatin1().constData();
-    ircbot_send(soc, n);
+    ircbot_send(soc, h.toLatin1().constData());
     ircbot_send(soc,"PING\n");
     ircbot_read_blocked(soc);
     ircbot_send(soc,"USER qwert_zaq 8 x : qwert_zaq\n");
@@ -69,9 +63,9 @@ void ircbot_codepage(QTcpSocket *soc)
 void ircbot_join(QTcpSocket *soc)
 {
     ircbot_read_blocked(soc);
-    ircbot_send(soc,joich);
+    ircbot_send(soc, joiq.toLatin1().constData());
     ircbot_read_blocked(soc);
-    ircbot_send(soc, msg_greetings);
+    ircbot_send(soc, msg_greetings.toLatin1().constData());
 }
 
 void ircbot_disconnect(QTcpSocket *soc)
@@ -82,10 +76,10 @@ void ircbot_disconnect(QTcpSocket *soc)
 QString ircbot_rename( QString oldn, QTcpSocket *soc, const char * ch)
  {
     QString str(ch);
-    QStringList list2 = str.split(QLatin1Char(':'), Qt::SkipEmptyParts);
+    QStringList list2 = str.split(QLatin1Char(':'), QString::SkipEmptyParts);
     QString head = list2[0];
     QString msg = list2[1];
-    if ((head.indexOf(inchanch , 0) != -1) && (msg.startsWith("!nick")))
+    if ((head.indexOf(inchan , 0) != -1) && (msg.startsWith("!nick")))
     {
         msg = msg.remove(0, 5);
         msg= msg.simplified();
@@ -96,8 +90,7 @@ QString ircbot_rename( QString oldn, QTcpSocket *soc, const char * ch)
         else
         {
             QString h = "NICK "+msg+'\n';
-            const  char * n = h.toLatin1().constData();
-            ircbot_send(soc, n);
+            ircbot_send(soc, h.toLatin1().constData());
             QString s = ircbot_read_blocked(soc);
              if (s.indexOf("Nickname is already in use" , 0) != -1)
             {
@@ -115,10 +108,9 @@ void ircbot_loop(QTcpSocket *soc, QString dn)
     {
         QString c = ircbot_read_blocked(soc);
         qDebug() << c;
-        QString d = "you type: " + c;
         if (c.indexOf("!quit", 0)!= -1)
             ircbot_disconnect(soc);
-        if ((c.indexOf(inchanch, 0) != -1) && (c.indexOf(dn , 0) != -1))
+        if ((c.indexOf(inchan, 0) != -1) && (c.indexOf(dn , 0) != -1))
         {
             QString answq = "PRIVMSG " + ircbot_channel + " : i hear you\n";
             const char * answch = answq.toLatin1().constData();
@@ -126,8 +118,11 @@ void ircbot_loop(QTcpSocket *soc, QString dn)
             soc->waitForBytesWritten();
         }
         if (c.indexOf("PING", 0)!= -1)
-            ircbot_send(soc, "PONG irc.lucky.net\n ");
-        if ((c.indexOf(inchanch, 0) != -1) && (c.indexOf("!nick" , 0) != -1))
+        {
+            QString pong = "PONG " + server + "\n" ;
+            ircbot_send(soc, pong.toLatin1().constData());
+        }
+        if ((c.indexOf(inchan, 0) != -1) && (c.indexOf("!nick" , 0) != -1))
         {
             char const* ch = c.toLatin1().constData();
             dn = ircbot_rename(dn, soc, ch);
@@ -148,22 +143,7 @@ int main()
       return 0;
 }
 
-/*
-int main ()
-{
-    QString name ="test_bot";
-    QString ircbot_channel = "#ruschat";
-    QString  joiq = "JOIN " + ircbot_channel + "\n";
-    const char * joich = joiq.toLocal8Bit().constData();
-    cout<<joich<<endl;
-    QString inchanq = "PRIVMSG "+ ircbot_channel;
-    const char * inchanch = inchanq.toLocal8Bit().constData();
-     cout<<inchanch<<endl;
-    QString msg_greet = "PRIVMSG " + ircbot_channel + " :hi from netcat\n";
-    const char * msg_greetings = msg_greet.toLocal8Bit().constData();
-    cout<<msg_greetings<<endl;
-}
-*/
+
 /************************************************************************* //рабочий
 #define SERVER "62.149.7.206"                     //"62.149.7.206"
 #define PORT 6660                                       //6660
