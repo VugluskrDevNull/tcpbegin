@@ -6,12 +6,7 @@
 #include  <QAbstractSocket>
 #include <fstream>
 using namespace std;
-/*************************************************
- * код в две процедуре ircbot_config_load() и ircbot_config_save()
- * когда ты меняешь ник боту, он продолжает откликаться на новый ник?
- *  ну ты передаёшь ник как аргумент к ircbot_loop(), и используешь его как аргумент. можно порешать двумя способами:
- *  1. просто убрать параметр dn у ircbot_loop() и использовать вместо него глобальную переменную
- * **********************************************/
+
     QFile file("bot_data.txt");
     int port = 6667;
     QString server = "irc.lucky.net";      // "62.149.7.206";  "irc.lucky.net"  "chat.freenode.net"
@@ -76,9 +71,40 @@ void ircbot_join(QTcpSocket *soc)
     ircbot_send(soc, msg_greetings.toLatin1().constData());
 }
 
+void ircbot_config_save()
+{
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+       file.write(name.toLatin1());
+    }
+    else
+        cout<<"cant open file bot_data for save\n";
+    file.close();
+}
+
 void ircbot_disconnect(QTcpSocket *soc)
 {
+    ircbot_config_save();
     soc->close();
+}
+
+void ircbot_config_load()
+{
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qWarning("Cannot open file for reading");
+        if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+           qDebug()<<"name is "<<name<<endl;
+           ircbot_config_save();
+         }
+      }
+    else
+    {
+        QTextStream in(&file);
+        QString line = in.readLine();
+        qDebug()<<"line is "<<line<<endl;
+        name = line;
+        file.close();
+    }
 }
 
 QString ircbot_rename( QString oldn, QTcpSocket *soc, QString q)
@@ -104,12 +130,7 @@ QString ircbot_rename( QString oldn, QTcpSocket *soc, QString q)
                 return oldn;
             }
             name = msg;
-            if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-               file.write(name.toLatin1());
-            }
-            else
-                cout<<"cant open file bot_data\n";
-            file.close();
+            ircbot_config_save();
             return msg;
         }
     }
@@ -144,18 +165,7 @@ void ircbot_loop(QTcpSocket *soc)
 
 int main()
 {
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning("Cannot open file for reading");
-        if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-           qDebug()<<"name is "<<name<<endl;
-           file.write(name.toLatin1());
-         }
-      }
-      QTextStream in(&file);
-      QString line = in.readLine();
-      qDebug()<<"line is "<<line<<endl;
-      name = line;
-      file.close();
+      ircbot_config_load();
       QTcpSocket *socket;
       socket = new QTcpSocket(NULL);
       if (!(ircbot_connect(socket)))
