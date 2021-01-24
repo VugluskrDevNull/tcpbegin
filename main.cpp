@@ -75,10 +75,11 @@ void ircbot_config_save()
 {
     if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
        file.write(name.toLatin1());
+       file.close();
     }
     else
         cout<<"cant open file bot_data for save\n";
-    file.close();
+
 }
 
 void ircbot_disconnect(QTcpSocket *soc)
@@ -92,11 +93,9 @@ void ircbot_config_load()
     if (!file.open(QIODevice::ReadOnly))
     {
         qWarning("Cannot open file for reading");
-        if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-           qDebug()<<"name is "<<name<<endl;
-           ircbot_config_save();
-         }
-      }
+        qDebug()<<"name is "<<name<<endl;
+        ircbot_config_save();
+    }
     else
     {
         QTextStream in(&file);
