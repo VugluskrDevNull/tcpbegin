@@ -5,16 +5,8 @@
 #include <QFile>
 #include  <QAbstractSocket>
 #include <fstream>
+#include "ini.h"
 using namespace std;
-/*
- делаешь новый бранч и там всё правишь. git checkout -b refactoring/config-struct
-*/
-
-QFile file("bot_data.txt");
-int port = 6667;
-QString server = "irc.lucky.net";      // "62.149.7.206";  "irc.lucky.net"  "chat.freenode.net"
-QString nick ="test_bot";
-QString ircbot_channel = "#ruschat";
 
 struct ircbot
 {
@@ -30,74 +22,74 @@ const char *ircbot_read_blocked(QTcpSocket *soc)
     {
         soc->waitForReadyRead(10000);
     }
-const char *ch = soc->readAll().constData();
-cout<<ch;
-return ch;
+    const char *ch = soc->readAll().constData();
+    cout<<ch;
+    return ch;
 }
 
 bool ircbot_connect(ircbot *pi, QTcpSocket *soc)
 {
-soc->connectToHost(pi->def_server.toLatin1().constData(), pi->prt);
-//soc->connectToHost("127.0.0.1", 4567);                                 // lochost
-if (!soc->waitForConnected(1000))
-{
-    qDebug() << "Not Connected";
-    return 0;
-}
-qDebug() << "Connected";
-return  1;
+    soc->connectToHost(pi->def_server.toLatin1().constData(), pi->prt);
+    //    soc->connectToHost("127.0.0.1", 4567);                                 // lochost
+    if (!soc->waitForConnected(1000))
+    {
+        qDebug() << "Not Connected";
+        return 0;
+    }
+    qDebug() << "Connected";
+    return  1;
 }
 
 void ircbot_send(QTcpSocket *soc, const  char * ch)
 {
-//    cout<<"i send (cout) - "<<ch<<endl;
-qDebug()<<"i send (qDebug() ) - "<<ch<<endl;
-soc->write(ch);
+    //    cout<<"i send (cout) - "<<ch<<endl;
+    qDebug()<<"i send (qDebug() ) - "<<ch<<endl;
+    soc->write(ch);
 }
 
 void ircbot_register(ircbot *pi, QTcpSocket *soc)
 {
-ircbot_read_blocked(soc);
-QString h = "NICK "+ pi->def_nick +'\n';
-ircbot_send(soc, h.toLatin1().constData());
-ircbot_send(soc,"PING\n");
-ircbot_read_blocked(soc);
-ircbot_send(soc,"USER qwert_zaq 8 x : qwert_zaq\n");
+    ircbot_read_blocked(soc);
+    QString h = "NICK "+ pi->def_nick +'\n';
+    ircbot_send(soc, h.toLatin1().constData());
+    ircbot_send(soc,"PING\n");
+    ircbot_read_blocked(soc);
+    ircbot_send(soc,"USER qwert_zaq 8 x : qwert_zaq\n");
 }
 
 void ircbot_codepage(QTcpSocket *soc)
 {
-ircbot_read_blocked(soc);
-ircbot_send(soc,"CODEPAGE UTF-8\n");
+    ircbot_read_blocked(soc);
+    ircbot_send(soc,"CODEPAGE UTF-8\n");
 }
 
 void ircbot_join(ircbot *pi, QTcpSocket *soc)
 {
-ircbot_read_blocked(soc);
-ircbot_send(soc, ("JOIN " + pi->def_channel + "\n").toLatin1().constData());
-ircbot_read_blocked(soc);
-ircbot_send(soc, ("PRIVMSG " + pi->def_channel + " :hi from netcat\n").toLatin1().constData());
+    ircbot_read_blocked(soc);
+    ircbot_send(soc, ("JOIN " + pi->def_channel + "\n").toLatin1().constData());
+    ircbot_read_blocked(soc);
+    ircbot_send(soc, ("PRIVMSG " + pi->def_channel + " :hi from netcat\n").toLatin1().constData());
 }
 
 void ircbot_config_save(ircbot *pi)
 {
-if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    file.write(pi->def_nick.toLatin1());
-    file.close();
-}
-else
-    cout<<"cant open file bot_data for save\n";
+    if(init_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        init_file.write(pi->def_nick.toLatin1());
+        init_file.close();
+    }
+    else
+        cout<<"cant open file bot_data for save\n";
 }
 
 void ircbot_disconnect(QTcpSocket *soc, ircbot *pi)
 {
-ircbot_config_save(pi);
-soc->close();
+    ircbot_config_save(pi);
+    soc->close();
 }
 
 void ircbot_config_load(ircbot *pi)
 {
-    if (!file.open(QIODevice::ReadOnly))
+    if (!init_file.open(QIODevice::ReadOnly))
     {
         qWarning("Cannot open file for reading");
         qDebug()<<"name is "<<pi->def_nick<<endl;
@@ -105,11 +97,11 @@ void ircbot_config_load(ircbot *pi)
     }
     else
     {
-        QTextStream in(&file);
+        QTextStream in(&init_file);
         QString line = in.readLine();
         qDebug()<<"line is "<<line<<endl;
         pi->def_nick = line;
-        file.close();
+        init_file.close();
     }
 }
 
