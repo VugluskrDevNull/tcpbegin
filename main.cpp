@@ -7,7 +7,6 @@
 #include <fstream>
 #include "ini.h"
 #include "ircbot.h"
-#include "libircbot.cpp"
 using namespace std;
 
 /*

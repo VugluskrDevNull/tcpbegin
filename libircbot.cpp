@@ -1,6 +1,8 @@
 #ifndef LIBIRCBOT_CPP
 #define LIBIRCBOT_CPP
 
+#include <ircbot.h>
+
 QString ircbot_read_blocked(QTcpSocket *soc)
 {
     while (!(soc->bytesAvailable()))
