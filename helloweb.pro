@@ -17,6 +17,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp
+        libircbot.cpp
+        ini.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
