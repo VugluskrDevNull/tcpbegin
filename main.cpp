@@ -7,18 +7,7 @@
 #include <fstream>
 #include "ini.h"
 #include "ircbot.h"
-#include "libircbot.cpp"
 using namespace std;
-
-/*
-1. создать новый бранч refactoring/lib (lib от слова "library" библиотека) на основе master
-2. создать новый файл в libircbot.cpp
-3. скопировать всё функции начинающиеся с ircbot в  этот файл
-4. создать ircbot.h в  который нужно перенести описание структуры ircbot и предописание всех фунукций в libircbot.cpp
-5. #include "ircbot.h" в main.cpp
-6. добавить в .pro файл (не .user.pro) имя  нового .cpp файла
- */
-
 
 
 int main()
