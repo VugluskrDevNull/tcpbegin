@@ -1,5 +1,9 @@
-#ifndef LIBIRCBOT_CPP
-#define LIBIRCBOT_CPP
+#include <iostream>
+#include "ircbot.h"
+using namespace std;
+
+const char * reg_data = "bot_data.txt";
+QFile init_file(reg_data);
 
 #include <ircbot.h>
 
@@ -143,5 +147,3 @@ while (1)
     }
 }
 }
-
-#endif
