@@ -1,10 +1,10 @@
-﻿#include <QCoreApplication>
-#include <iostream>
+﻿//#include <QCoreApplication>
+//#include <iostream>
 #include <QTcpSocket>
-#include <QThread>
-#include <QFile>
-#include  <QAbstractSocket>
-#include <fstream>
+//#include <QThread>
+//#include <QFile>
+//#include  <QAbstractSocket>
+//#include <fstream>
 #include "ini.h"
 #include "ircbot.h"
 using namespace std;

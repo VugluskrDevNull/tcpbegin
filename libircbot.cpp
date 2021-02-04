@@ -1,4 +1,9 @@
+#include <iostream>
 #include "ircbot.h"
+using namespace std;
+
+const char * reg_data = "bot_data.txt";
+QFile init_file(reg_data);
 
 QString ircbot_read_blocked(QTcpSocket *soc)
 {
