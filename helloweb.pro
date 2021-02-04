@@ -18,8 +18,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         libircbot.cpp \
-        ircbot.h     \
-        ini.h       \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -27,6 +25,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 QMAKE_EXTRA_TARGETS += before_build makefilehook
+
+HEADERS += \
+    ini.h \
+    ircbot.h
 
 
 
