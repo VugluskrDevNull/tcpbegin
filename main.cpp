@@ -3,10 +3,7 @@
 #include "ircbot.h"
 using namespace std;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> refactoring/lib
 int main()
 {
     ircbot *ptrini = new ircbot;

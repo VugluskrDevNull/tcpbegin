@@ -104,7 +104,7 @@ QString ircbot_rename(ircbot *pi, QString oldn, QTcpSocket *soc, QString q)
     {
         msg = msg.remove(0, 5);
         msg= msg.simplified();
-        if (msg.contains(QRegExp("[^a-zA-Z_-/d]"))) // ??? ??????, ??? ??? ? str ???-?? ??? ????? ???? ?? 'a' ?? 'z', 'A' ?? 'Z', '_' ? '-'
+        if (msg.contains(QRegExp("[^a-zA-Z_-/d]"))) 
         {
             qDebug()<<"error nick\n";
         }

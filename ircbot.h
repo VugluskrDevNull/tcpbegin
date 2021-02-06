@@ -1,18 +1,8 @@
 #ifndef IRCBOT_H
 #define IRCBOT_H 
 
-<<<<<<< HEAD
-#include <QCoreApplication>
-#include <iostream>
-#include <QTcpSocket>
-#include <QThread>
-#include <QFile>
-#include  <QAbstractSocket>
-#include <fstream>
-=======
 #include <QTcpSocket>
 #include <QFile>
->>>>>>> refactoring/lib
 
 struct ircbot
 {
