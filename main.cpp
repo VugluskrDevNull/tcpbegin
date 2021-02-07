@@ -11,16 +11,15 @@ int main()
     ptrini->def_server= server;
     ptrini->def_nick=nick;
     ptrini->def_channel=ircbot_channel;
-
+    ptrini->socket = new QTcpSocket(NULL);
     ircbot_config_load(ptrini);
-    QTcpSocket *socket;
-    socket = new QTcpSocket(NULL);
-    if (!(ircbot_connect(ptrini, socket)))
+
+    if (!(ircbot_connect(ptrini)))
         return  1;
-    ircbot_register(ptrini, socket);
-    ircbot_codepage(socket);
-    ircbot_join(ptrini, socket);
-    ircbot_loop(ptrini, socket);
+    ircbot_register(ptrini);
+    ircbot_codepage(ptrini);
+    ircbot_join(ptrini);
+    ircbot_loop(ptrini);
     return 0;
 }
 

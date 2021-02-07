@@ -10,18 +10,19 @@ struct ircbot
     QString def_server;
     QString def_nick ;
     QString def_channel;
+    QTcpSocket *socket;
 };
 
-QString ircbot_read_blocked(QTcpSocket *);
-bool ircbot_connect(ircbot *, QTcpSocket *);
+QString ircbot_read_blocked(ircbot *);
+bool ircbot_connect(ircbot *);
 void ircbot_send(QTcpSocket *, QString );
-void ircbot_register(ircbot *, QTcpSocket *);
-void ircbot_codepage(QTcpSocket *);
-void ircbot_join(ircbot *, QTcpSocket *);
+void ircbot_register(ircbot *);
+void ircbot_codepage(ircbot *);
+void ircbot_join(ircbot *);
 void ircbot_config_save(ircbot *);
-void ircbot_disconnect(QTcpSocket *, ircbot *);
+void ircbot_disconnect(ircbot *);
 void ircbot_config_load(ircbot *);
-QString ircbot_rename(ircbot *, QString , QTcpSocket *, QString );
-void ircbot_loop(ircbot *, QTcpSocket *);
+QString ircbot_rename(ircbot *, QString , QString );
+void ircbot_loop(ircbot *);
 
 #endif

@@ -7,22 +7,22 @@ QFile init_file(reg_data);
 
 #include <ircbot.h>
 
-QString ircbot_read_blocked(QTcpSocket *soc)
+QString ircbot_read_blocked(ircbot *pi)
 {
-    while (!(soc->bytesAvailable()))
+    while (!(pi->socket->bytesAvailable()))
     {
-        soc->waitForReadyRead(10000);
+        pi->socket->waitForReadyRead(10000);
     }
-    QString q = soc->readAll().constData();
+    QString q = pi->socket->readAll().constData();
     qDebug()<<q;
     return q;
 }
 
-bool ircbot_connect(ircbot *pi, QTcpSocket *soc)
+bool ircbot_connect(ircbot *pi)
 {
-    soc->connectToHost(pi->def_server.toLatin1().constData(), pi->prt);
+    pi->socket->connectToHost(pi->def_server.toLatin1().constData(), pi->prt);
     //    soc->connectToHost("127.0.0.1", 4567);                                 // lochost
-    if (!soc->waitForConnected(1000))
+    if (!pi->socket->waitForConnected(1000))
     {
         qDebug() << "Not Connected";
         return 0;
@@ -38,27 +38,27 @@ void ircbot_send(QTcpSocket *soc, QString q)
     soc->write(q.toLatin1().constData());
 }
 
-void ircbot_register(ircbot *pi, QTcpSocket *soc)
+void ircbot_register(ircbot *pi)
 {
-    ircbot_read_blocked(soc);
-    ircbot_send(soc, "NICK "+ pi->def_nick +"\n");
-    ircbot_send(soc,"PING\n");
-    ircbot_read_blocked(soc);
-    ircbot_send(soc,"USER qwert_zaq 8 x : qwert_zaq\n");
+    ircbot_read_blocked(pi);
+    ircbot_send(pi->socket, "NICK "+ pi->def_nick +"\n");
+    ircbot_send(pi->socket,"PING\n");
+    ircbot_read_blocked(pi);
+    ircbot_send(pi->socket,"USER qwert_zaq 8 x : qwert_zaq\n");
 }
 
-void ircbot_codepage(QTcpSocket *soc)
+void ircbot_codepage(ircbot *pi)
 {
-    ircbot_read_blocked(soc);
-    ircbot_send(soc,"CODEPAGE UTF-8\n");
+    ircbot_read_blocked(pi);
+    ircbot_send(pi->socket,"CODEPAGE UTF-8\n");
 }
 
-void ircbot_join(ircbot *pi, QTcpSocket *soc)
+void ircbot_join(ircbot *pi)
 {
-    ircbot_read_blocked(soc);
-    ircbot_send(soc, "JOIN " + pi->def_channel + "\n");
-    ircbot_read_blocked(soc);
-    ircbot_send(soc, "PRIVMSG " + pi->def_channel + " :hi from netcat\n");
+    ircbot_read_blocked(pi);
+    ircbot_send(pi->socket, "JOIN " + pi->def_channel + "\n");
+    ircbot_read_blocked(pi);
+    ircbot_send(pi->socket, "PRIVMSG " + pi->def_channel + " :hi from netcat\n");
 }
 
 void ircbot_config_save(ircbot *pi)
@@ -71,10 +71,10 @@ void ircbot_config_save(ircbot *pi)
         cout<<"cant open file bot_data for save\n";
 }
 
-void ircbot_disconnect(QTcpSocket *soc, ircbot *pi)
+void ircbot_disconnect(ircbot *pi)
 {
     ircbot_config_save(pi);
-    soc->close();
+    pi->socket->close();
 }
 
 void ircbot_config_load(ircbot *pi)
@@ -95,7 +95,7 @@ void ircbot_config_load(ircbot *pi)
     }
 }
 
-QString ircbot_rename(ircbot *pi, QString oldn, QTcpSocket *soc, QString q)
+QString ircbot_rename(ircbot *pi, QString oldn, QString q)
 {
     QStringList list2 = q.split(QLatin1Char(':'), QString::SkipEmptyParts);
     QString head = list2[0];
@@ -111,8 +111,8 @@ QString ircbot_rename(ircbot *pi, QString oldn, QTcpSocket *soc, QString q)
         else
         {
             QString h = "NICK "+msg+'\n';
-            ircbot_send(soc, h);
-            QString s = ircbot_read_blocked(soc);
+            ircbot_send(pi->socket, h);
+            QString s = ircbot_read_blocked(pi);
              if (s.indexOf("Nickname is already in use" , 0) != -1)
             {
                 return oldn;
@@ -124,26 +124,26 @@ QString ircbot_rename(ircbot *pi, QString oldn, QTcpSocket *soc, QString q)
     }
 }
 
-void ircbot_loop(ircbot *pi, QTcpSocket *soc)
+void ircbot_loop(ircbot *pi)
 {
 while (1)
 {
-    QString c = ircbot_read_blocked(soc);
+    QString c = ircbot_read_blocked(pi);
     qDebug() << c;
     if (c.indexOf("!quit", 0)!= -1)
-        ircbot_disconnect(soc, pi);
+        ircbot_disconnect(pi);
     if ((c.indexOf("PRIVMSG "+ pi->def_channel, 0) != -1) && (c.indexOf(pi->def_nick , 0) != -1))
     {
-        ircbot_send(soc, "PRIVMSG " + pi->def_channel + " : i hear you\n");
-        soc->waitForBytesWritten();
+        ircbot_send(pi->socket, "PRIVMSG " + pi->def_channel + " : i hear you\n");
+        pi->socket->waitForBytesWritten();
     }
     if (c.indexOf("PING", 0)!= -1)
     {
-        ircbot_send(soc, "PONG " + pi->def_server + "\n");
+        ircbot_send(pi->socket, "PONG " + pi->def_server + "\n");
     }
     if ((c.indexOf("PRIVMSG "+ pi->def_channel, 0) != -1) && (c.indexOf("!nick" , 0) != -1))
     {
-        pi->def_nick = ircbot_rename(pi, pi->def_nick, soc, c);
+        pi->def_nick = ircbot_rename(pi, pi->def_nick, c);
     }
 }
 }

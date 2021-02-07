@@ -8,4 +8,5 @@ const QString server = "irc.lucky.net";      // "62.149.7.206";  "irc.lucky.net"
 const  QString nick ="test_bot";
 const QString ircbot_channel = "#ruschat";
 
+
 #endif
