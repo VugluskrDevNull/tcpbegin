@@ -1,5 +1,38 @@
+#include <QTcpSocket>
+#include <QFile>
+
 #ifndef IRCBOT_H
-#define IRCBOT_H 
+#define IRCBOT_H
+
+#include <QTcpSocket>
+#include <QFile>
+
+class Bot
+{
+    public :
+    int prt;
+    QString def_server;
+    QString def_nick ;
+    QString def_channel;
+    QTcpSocket *socket;
+    QString read_blocked(Bot *);
+    bool connect(Bot *);
+    void send(Bot *, QString );
+    void registr(Bot *);
+    void codepage(Bot *);
+    void join(Bot *);
+    void config_save(Bot *);
+    void disconnect(Bot *);
+    void config_load(Bot *);
+    QString rename(Bot *, QString , QString );
+    void loop(Bot *);
+};
+
+#endif
+
+/*
+#ifndef IRCBOT_H
+#define IRCBOT_H
 
 #include <QTcpSocket>
 #include <QFile>
@@ -26,3 +59,4 @@ QString ircbot_rename(ircbot *, QString , QString );
 void ircbot_loop(ircbot *);
 
 #endif
+*/
