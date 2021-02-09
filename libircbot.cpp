@@ -13,14 +13,14 @@ QString Bot::read_blocked()
     {
         socket->waitForReadyRead(10000);
     }
-    QString q = this->socket->readAll().constData();
+    QString q = socket->readAll().constData();
     qDebug()<<q;
     return q;
 }
 
 bool Bot::connect()
 {
-    socket->connectToHost(this->def_server.toLatin1().constData(), this->prt);
+    socket->connectToHost(def_server.toLatin1().constData(), prt);
     //    soc->connectToHost("127.0.0.1", 4567);                                 // lochost
     if (!socket->waitForConnected(1000))
     {
@@ -41,7 +41,7 @@ void Bot::send(QString q)
 void Bot::registr()
 {
     read_blocked();
-    send( "NICK "+ this->def_nick +"\n");
+    send( "NICK "+ def_nick +"\n");
     send("PING\n");
     read_blocked();
     send("USER qwert_zaq 8 x : qwert_zaq\n");
