@@ -18,5 +18,4 @@ int main()
 }
 
 
-// 1. надо релизнуть поставив таг  - git tag -a v1.0 -m "Version 2.0"  git push --follow-tags
 

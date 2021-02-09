@@ -19,14 +19,13 @@ class Bot
      Bot (const int port = 6667,
           const QString server = "irc.lucky.net",
           const  QString nick ="test_bot",
-          const QString ircbot_channel = "#ruschat",
-          QTcpSocket *socket = new QTcpSocket(NULL)
-          )
+          const QString ircbot_channel = "#ruschat" )
      {
          int prt = port;
          QString def_server = server;
          QString def_nick = nick;
          QString def_channel = ircbot_channel;
+         socket = new QTcpSocket(NULL);
      };
 
     ~Bot () {}
