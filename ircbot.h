@@ -9,26 +9,28 @@
 
 class Bot
 {
-    int prt;
-    QString def_server;
-    QString def_nick;
-    QString def_channel;
+    int port;
+    QString server;
+    QString nick;
+    QString channel;
     QTcpSocket *socket;
 
     public :
-     Bot (const int port = 6667,
-          const QString server = "irc.lucky.net",
-          const  QString nick ="test_bot",
-          const QString ircbot_channel = "#ruschat" )
+     Bot (const QString _server = "irc.lucky.net",
+          const int _port = 6667,
+          const  QString _nick ="test_bot",
+          const QString _channel = "#ruschat" )
      {
-         int prt = port;
-         QString def_server = server;
-         QString def_nick = nick;
-         QString def_channel = ircbot_channel;
+         port = _port;
+         server = _server;
+         nick = _nick;
+         channel = _channel;
          socket = new QTcpSocket(NULL);
      };
 
-    ~Bot () {}
+    ~Bot () {
+         delete socket;
+     }
 
 
     QString read_blocked();
