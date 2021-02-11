@@ -1,28 +1,50 @@
+#include <QTcpSocket>
+#include <QFile>
+
 #ifndef IRCBOT_H
-#define IRCBOT_H 
+#define IRCBOT_H
 
 #include <QTcpSocket>
 #include <QFile>
 
-struct ircbot
+class Bot
 {
-    int prt;
-    QString def_server;
-    QString def_nick ;
-    QString def_channel;
+    int port;
+    QString server;
+    QString nick;
+    QString channel;
     QTcpSocket *socket;
+
+    public :
+     Bot (const QString _server = "irc.lucky.net",
+          const int _port = 6667,
+          const  QString _nick ="test_bot",
+          const QString _channel = "#ruschat" )
+     {
+         port = _port;
+         server = _server;
+         nick = _nick;
+         channel = _channel;
+         socket = new QTcpSocket(NULL);
+     };
+
+    ~Bot () {
+         delete socket;
+     }
+
+
+    QString read_blocked();
+    bool connect();
+    void send(QString );
+    void registr();
+    void codepage();
+    void join();
+    void config_save();
+    void disconnect();
+    void config_load();
+    QString rename(QString , QString);
+    void loop();
 };
 
-QString ircbot_read_blocked(ircbot *);
-bool ircbot_connect(ircbot *);
-void ircbot_send(QTcpSocket *, QString );
-void ircbot_register(ircbot *);
-void ircbot_codepage(ircbot *);
-void ircbot_join(ircbot *);
-void ircbot_config_save(ircbot *);
-void ircbot_disconnect(ircbot *);
-void ircbot_config_load(ircbot *);
-QString ircbot_rename(ircbot *, QString , QString );
-void ircbot_loop(ircbot *);
-
 #endif
+

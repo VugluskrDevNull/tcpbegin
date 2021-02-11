@@ -27,7 +27,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 QMAKE_EXTRA_TARGETS += before_build makefilehook
 
 HEADERS += \
-    ini.h \
     ircbot.h
 
 
