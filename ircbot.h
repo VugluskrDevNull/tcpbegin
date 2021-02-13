@@ -1,14 +1,13 @@
+#include <QCoreApplication>
 #include <QTcpSocket>
 #include <QFile>
 
 #ifndef IRCBOT_H
 #define IRCBOT_H
 
-#include <QTcpSocket>
-#include <QFile>
-
-class Bot
+class Bot : public QObject
 {
+    Q_OBJECT;
     int port;
     QString server;
     QString nick;
@@ -26,12 +25,13 @@ class Bot
          nick = _nick;
          channel = _channel;
          socket = new QTcpSocket(NULL);
+         QObject::connect(socket, SIGNAL(connected()), SLOT(foo()));
      };
-
-    ~Bot () {
+         public slots :
+         signals:
+     ~Bot () {
          delete socket;
      }
-
 
     QString read_blocked();
     bool connect();
@@ -44,6 +44,7 @@ class Bot
     void config_load();
     QString rename(QString , QString);
     void loop();
+    void foo();                                //
 };
 
 #endif
