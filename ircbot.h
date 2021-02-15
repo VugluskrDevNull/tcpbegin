@@ -25,10 +25,12 @@ class Bot : public QObject
          nick = _nick;
          channel = _channel;
          socket = new QTcpSocket(NULL);
-         QObject::connect(socket, SIGNAL(connected()), SLOT(foo()));
+         QObject::connect(socket, SIGNAL(QObject::connected()), SLOT(foo()));
      };
          public slots :
-         signals:
+         void foo(){qDebug()<<"slot completed\n";}      //
+
+        //  signals:
      ~Bot () {
          delete socket;
      }
@@ -44,7 +46,6 @@ class Bot : public QObject
     void config_load();
     QString rename(QString , QString);
     void loop();
-    void foo();                                //
 };
 
 #endif

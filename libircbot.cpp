@@ -146,4 +146,3 @@ while (1)
 }
 }
 
- void Bot::foo(){qDebug()<<"slot completed\n";}      //
