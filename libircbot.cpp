@@ -146,3 +146,9 @@ while (1)
 }
 }
 
+ void Bot::connected ()
+ {
+      registr();
+      codepage();
+      join();
+ }
