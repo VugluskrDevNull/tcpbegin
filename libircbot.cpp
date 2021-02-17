@@ -69,7 +69,7 @@ void Bot::config_save()
         cout<<"cant open file bot_data for save\n";
 }
 
-void Bot::disconnect()
+void Bot::disconnected()
 {
     config_save();
     socket->close();
@@ -129,7 +129,7 @@ while (1)
     QString c = read_blocked();
     qDebug() << c;
     if (c.indexOf("!quit", 0)!= -1)
-        disconnect();
+        disconnected();
     if ((c.indexOf("PRIVMSG "+ channel, 0) != -1) && (c.indexOf(nick , 0) != -1))
     {
         send("PRIVMSG " + channel + " : i hear you\n");

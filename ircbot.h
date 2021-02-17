@@ -25,8 +25,12 @@ public :
          nick = _nick;
          channel = _channel;
          socket = new QTcpSocket(NULL);
+         QObject::connect(socket, SIGNAL(connected()), this, SLOT(config_load()));
          QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
-     };
+         QObject::connect(socket, SIGNAL(connected()), this, SLOT(loop ()));
+         QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
+      };
+
      ~Bot ()
      {
          delete socket;
@@ -35,18 +39,16 @@ public :
     QString read_blocked();
     bool connect();
     void send(QString );
-
     void config_save();
-    void disconnect();
-    void config_load();
     QString rename(QString , QString);
-    void loop();
     void registr();
     void codepage();
     void join();
 public slots :
      void connected ();
-
+     void disconnected();
+     void config_load();
+     void loop();
 //  signals:
 };
 
