@@ -152,3 +152,8 @@ while (1)
       codepage();
       join();
  }
+
+ void Bot::bytesWritten(qint64 bytes)
+ {
+     qDebug() << bytes << " bytes written...";
+ }
