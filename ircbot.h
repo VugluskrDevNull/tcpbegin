@@ -29,6 +29,7 @@ public :
          QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
          QObject::connect(socket, SIGNAL(connected()), this, SLOT(loop ()));
          QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
+         QObject::connect (socket, SIGNAL (connected()), this, SLOT (foo()));
       };
 
      ~Bot ()
@@ -49,6 +50,7 @@ public slots :
      void disconnected();
      void config_load();
      void loop();
+     void foo() {qDebug()<<"foo()\n";  if(socket->QAbstractSocket::bytesAvailable()) qDebug()<<"get line\n";}
 //  signals:
 };
 

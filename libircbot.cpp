@@ -40,8 +40,8 @@ void Bot::registr()
 {
     read_blocked();
     send( "NICK "+ nick +"\n");
-    send("PING\n");
-    read_blocked();
+ //   send("PING\n");
+  //  read_blocked();
     send("USER qwert_zaq 8 x : qwert_zaq\n");
 }
 
