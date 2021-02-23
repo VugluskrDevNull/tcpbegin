@@ -15,10 +15,10 @@ class Bot : public QObject
     QTcpSocket *socket;
 
 public :
-     Bot (const QString _server = "irc.lucky.net",
-          const int _port = 6667,
-          const  QString _nick ="test_bot",
-          const QString _channel = "#ruschat" )
+     Bot (const QString _server,
+          const int _port,
+          const  QString _nick,
+          const QString _channel )
      {
          port = _port;
          server = _server;
