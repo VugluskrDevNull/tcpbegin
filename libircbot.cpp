@@ -1,9 +1,9 @@
 #include <iostream>
+#include <QSettings>
 #include "ircbot.h"
 using namespace std;
 
-const char * reg_data = "bot_data.txt";
-QFile init_file(reg_data);
+QSettings * settings = new QSettings( "settings.conf", QSettings::IniFormat );
 
 QString Bot::read_blocked()
 {
@@ -61,13 +61,15 @@ void Bot::join()
 
 void Bot::config_save()
 {
-    if(init_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        init_file.write(nick.toLatin1());
-        init_file.close();
-    }
-    else
-        cout<<"cant open file bot_data for save\n";
+    settings->beginGroup("login");
+    settings->setValue("settings/server", server);
+    settings->setValue("settings/port", port);
+    settings->setValue("settings/nick", nick);
+    settings->setValue("settings/channel", channel);
+    settings->endGroup();
+    settings->sync();
 }
+
 
 void Bot::disconnected()
 {
@@ -75,23 +77,18 @@ void Bot::disconnected()
     socket->close();
 }
 
-void Bot::config_load()
+BotConfig Bot::config_load()
 {
-    if (!init_file.open(QIODevice::ReadOnly))
-    {
-        qWarning("Cannot open file for reading");
-        qDebug()<<"name is "<<nick<<endl;
-        config_save();
-    }
-    else
-    {
-        QTextStream in(&init_file);
-        QString line = in.readLine();
-        qDebug()<<"line is "<<line<<endl;
-        nick = line;
-        init_file.close();
-    }
+     BotConfig log;
+     settings->beginGroup("login");
+     log.ser = settings->value("settings/server", conf.ser).toString();
+     log.por = settings->value("settings/port", conf.por).toInt();
+     log.ni = settings->value("settings/nick", conf.ni).toString();
+     log.chan = settings->value("settings/channel", conf.chan).toString();
+     settings->endGroup();
+     return log;
 }
+
 
 QString Bot::rename( QString oldn, QString q)
 {
