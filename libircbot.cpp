@@ -3,6 +3,8 @@
 #include "ircbot.h"
 using namespace std;
 
+BotConfig conf = { .ser = DEFAULT_SERVER, .por = DEFAULT_PORT, .ni = DEFAULT_NICK, .chan = DEFAULT_CHAN };
+
 QSettings * settings = new QSettings( "settings.conf", QSettings::IniFormat );
 
 QString Bot::read_blocked()

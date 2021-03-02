@@ -1,11 +1,8 @@
-﻿#include <QTcpSocket>
-#include <QSettings>
-#include "ircbot.h"
+﻿#include "ircbot.h"
 using namespace std;
 
 int main()
 {
-
     Bot  * botptr = new Bot;
     if (!(botptr->connect()))
         return  1;

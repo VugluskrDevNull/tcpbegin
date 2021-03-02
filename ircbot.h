@@ -18,8 +18,6 @@ struct BotConfig
     QString chan;
  };
 
-BotConfig conf = { .ser = DEFAULT_SERVER, .por = DEFAULT_PORT, .ni = DEFAULT_NICK, .chan = DEFAULT_CHAN };
-
 class Bot : public QObject
 {
     Q_OBJECT;
