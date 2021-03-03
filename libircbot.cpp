@@ -155,8 +155,7 @@ while (1)
  void Bot::bytesWritten(qint64 bytes)
  {
      qDebug() << bytes << " bytes written...";
-/*
-     QString str = socket->readAll().constData();
+     QString str = socket->readLine().constData();
      QStringList list = str.split(QLatin1Char(':'), Qt::SkipEmptyParts);
      if(!(list.empty()))
      {
@@ -164,5 +163,5 @@ while (1)
           QStringList list2 = list[0].split(QLatin1Char(' '), Qt::SkipEmptyParts);
           qDebug()<<list2[1].toInt()<<endl;
      }
-     */
+
  }
