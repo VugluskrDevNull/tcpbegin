@@ -37,16 +37,14 @@ void Bot::send(QString q)
     qDebug()<<"i send (qDebug() ) - "<<q<<endl;
     socket->write(q.toLatin1().constData());
 }
-
+/*
 void Bot::registr()
 {
     read_blocked();
     send( "NICK "+ nick +"\n");
- //   send("PING\n");
-  //  read_blocked();
     send("USER qwert_zaq 8 x : qwert_zaq\n");
 }
-
+*/
 void Bot::codepage()
 {
     read_blocked();
@@ -144,24 +142,61 @@ while (1)
     }
 }
 }
-
+/*
  void Bot::connected ()
  {
       registr();
       codepage();
       join();
  }
-
- void Bot::bytesWritten(qint64 bytes)
- {
+*/
+ void Bot:: bytesWritten (qint64 bytes)
+  {
      qDebug() << bytes << " bytes written...";
-     QString str = socket->readLine().constData();
-     QStringList list = str.split(QLatin1Char(':'), Qt::SkipEmptyParts);
-     if(!(list.empty()))
-     {
-          qDebug()<<list[1]<<endl;
-          QStringList list2 = list[0].split(QLatin1Char(' '), Qt::SkipEmptyParts);
-          qDebug()<<list2[1].toInt()<<endl;
-     }
+     QString str = read_blocked();
+     QStringList list = str.split(QLatin1Char('\n'), Qt::SkipEmptyParts);
 
- }
+     QStringList::iterator  it;
+     QString head;
+     QString msg;
+     for (it = list.begin(); it!=list.end(); ++it)
+     {
+         QString s=*it;
+         int n0=s.indexOf(':');                  // ищем 0е :
+         if (s[0] != ':')
+             continue;    //qDebug()<<"s[0] -"<<s[0]<<endl;  //
+         if (s.indexOf(':', n0+1)==-1)
+             continue;
+         {
+             int n1=s.indexOf(':', n0+1);            // ищем 1е :
+             QStringRef head(&s, n0, n1-n0);
+            // qDebug()<<"head - "<<head<<endl;
+             QStringRef msg(&s, n1, (*it).length()-n1);
+             //qDebug()<<"msg -"<<msg<<endl;
+              QStringList header_fields;
+              QString str3;
+              str3.append(head);
+              header_fields = str3.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+              bool ok;
+              int type = header_fields[1].toInt(&ok, 10);
+              if ((header_fields[0].indexOf(server)!=-1) && ok && (header_fields[2].indexOf(nick)!=-1)
+              ||    (header_fields[0].indexOf(server)!=-1) && type==20 && (header_fields[2].indexOf(server)!=-1)) //исключение для 1 строки где нет nick
+              {
+                  qDebug()<<endl<<"CODE OF COMMAND "<<type<<endl;
+                  qDebug()<<endl<<"TEXT TO BOT "<<msg<<endl;
+              }
+              else qDebug()<<"not found\n";
+              switch (type)
+              {
+              case 20 :
+              {
+              send( "NICK "+ nick +"\n");
+              send("USER qwert_zaq 8 x : qwert_zaq\n");
+              break;
+              }
+              case 372 : join(); break;
+              }
+           }
+       }
+   }
+

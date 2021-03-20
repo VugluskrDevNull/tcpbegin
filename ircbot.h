@@ -37,11 +37,12 @@ public :
         channel = login.chan;
         socket = new QTcpSocket(NULL);
         QObject::connect(socket, SIGNAL(connected()), this, SLOT(config_load()));
-        QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
+  //      QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
+        QObject::connect(socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
         QObject::connect(socket, SIGNAL(connected()), this, SLOT(loop ()));
         QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
         QObject::connect (socket, SIGNAL (connected()), this, SLOT (foo()));
-        QObject::connect(socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
+
      };
 
      ~Bot ()
@@ -54,11 +55,11 @@ public :
     void send(QString );
     void config_save();
     QString rename(QString , QString);
-    void registr();
+ //   void registr();
     void codepage();
     void join();
 public slots :
-     void connected ();
+   //  void connected ();
      void disconnected();
      BotConfig config_load();
      void loop();
