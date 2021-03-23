@@ -1,14 +1,14 @@
 ﻿#include "ircbot.h"
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    Bot  * botptr = new Bot;
+    QCoreApplication a(argc, argv);
+
+    Bot *botptr = new Bot;
     if (!(botptr->connect()))
         return  1;
-    return 0;
+
+    return a.exec();
 }
-
-
-
 
