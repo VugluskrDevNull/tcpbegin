@@ -36,13 +36,13 @@ public :
         nick = login.ni;
         channel = login.chan;
         socket = new QTcpSocket(NULL);
-        QObject::connect(socket, SIGNAL(connected()), this, SLOT(config_load()));
-  //      QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
-        QObject::connect(socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
-        QObject::connect(socket, SIGNAL(connected()), this, SLOT(loop ()));
-        QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
-        QObject::connect (socket, SIGNAL (connected()), this, SLOT (foo()));
 
+        QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
+        QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
+
+        QObject::connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+        //QObject::connect(socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
+        QObject::connect(socket, SIGNAL(signal_channel_joined()),this, SLOT(slot_channel_joined()));
      };
 
      ~Bot ()
@@ -55,18 +55,20 @@ public :
     void send(QString );
     void config_save();
     QString rename(QString , QString);
- //   void registr();
     void codepage();
     void join();
+
+    BotConfig config_load();
+
+    void channel_msg(const QString *msg);
+
 public slots :
-   //  void connected ();
+     //void connected ();
      void disconnected();
-     BotConfig config_load();
-     void loop();
-     void foo() {qDebug()<<"foo()\n";  if(socket->QAbstractSocket::bytesAvailable()) qDebug()<<"get line\n";}
-     void bytesWritten(qint64);
-//  signals:
+     void readyRead();
+     void slot_channel_joined();
+  signals:
+     void signal_channel_joined();
 };
 
 #endif
-
