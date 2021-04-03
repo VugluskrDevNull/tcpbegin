@@ -36,13 +36,7 @@ void Bot::send(QString str)
 
     socket->write(str.toLatin1().constData());
 }
-/*
-void Bot::registr()
-{
-    send( "NICK "+ nick +"\n");
-    send("USER qwert_zaq 8 x : qwert_zaq\n");
-}
-*/
+
 void Bot::codepage()
 {
     send("CODEPAGE UTF-8\n");
@@ -201,24 +195,7 @@ void Bot::channel_msg(const QString *msg)
            }
        }
    }
- /*
-  1. описать слот slot_channel_joined() (где выводишь на канал "hi from bot"  2. вставить отсылание сигнала в
-правильном месте emit signal_channel_joined() 3. в конструкторе соедини с помощью QObject::connect() слот slot_channel_joined()
-с сигналом signal_channel_joined() изменение топика уже потом, вторым шагом
-сигнал   channel_joined()  делает send("PRIVMSG " + channel + " :hi from netcat\n"); и меняет топик
 
-QObject::connect(socket почему socket-то? если slot_channel_joined() это твой сигнал в Bot, который ты опишешь
- в разделе signals  emit это излучать. излучают сигнал, а не слот
-// QObject::connect(socket, SIGNAL(signal_channel_joined()),this, SLOT(slot_channel_joined()));
-signals:
-  void MySetValueSignal(int);
-в сырцах, где надо послать сигнал, пишем:
-
-emit MySetValueSignal(value);
-ну и не забыть законнектить:
-
-connect(this, SIGNAL(MySetValueSignal(int)), spinBox, SLOT(setValue(int)));
-*/
  void Bot :: slot_channel_joined()
  {
      send("PRIVMSG " + channel + " :hi from netcat\n");
