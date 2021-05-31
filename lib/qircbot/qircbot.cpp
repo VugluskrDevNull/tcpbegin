@@ -1,5 +1,6 @@
 #include <iostream>
-#include "ircbot.h"
+#include <qircbot.h>
+
 using namespace std;
 
 const char * reg_data = "bot_data.txt";

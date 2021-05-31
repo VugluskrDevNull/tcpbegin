@@ -1,5 +1,5 @@
-﻿#include <QTcpSocket>
-#include "ircbot.h"
+﻿#include <qircbot.h>
+
 using namespace std;
 
 int main()
