@@ -1,10 +1,13 @@
 #include <iostream>
+#include <QSettings>
+
 #include <qircbot.h>
 
 using namespace std;
 
-const char * reg_data = "bot_data.txt";
-QFile init_file(reg_data);
+BotConfig conf = { .ser = DEFAULT_SERVER, .por = DEFAULT_PORT, .ni = DEFAULT_NICK, .chan = DEFAULT_CHAN };
+
+QSettings * settings = new QSettings( "settings.conf", QSettings::IniFormat );
 
 QString Bot::read_blocked()
 {
@@ -13,7 +16,6 @@ QString Bot::read_blocked()
         socket->waitForReadyRead(10000);
     }
     QString q = socket->readAll().constData();
-    qDebug()<<q;
     return q;
 }
 
@@ -30,69 +32,61 @@ bool Bot::connect()
     return  1;
 }
 
-void Bot::send(QString q)
+void Bot::send(QString str)
 {
-    //    cout<<"i send (cout) - "<<ch<<endl;
-    qDebug()<<"i send (qDebug() ) - "<<q<<endl;
-    socket->write(q.toLatin1().constData());
-}
+    qDebug()<<">> " << str;
 
+    socket->write(str.toLatin1().constData());
+}
+/*
 void Bot::registr()
 {
-    read_blocked();
     send( "NICK "+ nick +"\n");
-    send("PING\n");
-    read_blocked();
     send("USER qwert_zaq 8 x : qwert_zaq\n");
 }
-
+*/
 void Bot::codepage()
 {
-    read_blocked();
     send("CODEPAGE UTF-8\n");
 }
 
 void Bot::join()
 {
-    read_blocked();
     send("JOIN " + channel + "\n");
-    read_blocked();
-    send("PRIVMSG " + channel + " :hi from netcat\n");
 }
 
 void Bot::config_save()
 {
-    if(init_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        init_file.write(nick.toLatin1());
-        init_file.close();
-    }
-    else
-        cout<<"cant open file bot_data for save\n";
+    settings->beginGroup("login");
+    settings->setValue("settings/server", server);
+    settings->setValue("settings/port", port);
+    settings->setValue("settings/nick", nick);
+    settings->setValue("settings/channel", channel);
+    settings->endGroup();
+    settings->sync();
 }
 
-void Bot::disconnect()
+
+void Bot::disconnected()
 {
     config_save();
     socket->close();
 }
 
-void Bot::config_load()
+BotConfig Bot::config_load()
 {
-    if (!init_file.open(QIODevice::ReadOnly))
-    {
-        qWarning("Cannot open file for reading");
-        qDebug()<<"name is "<<nick<<endl;
-        config_save();
-    }
-    else
-    {
-        QTextStream in(&init_file);
-        QString line = in.readLine();
-        qDebug()<<"line is "<<line<<endl;
-        nick = line;
-        init_file.close();
-    }
+     BotConfig config;
+
+     settings->beginGroup("login");
+     config.ser = settings->value("settings/server", conf.ser).toString();
+     config.por = settings->value("settings/port", conf.por).toInt();
+     config.ni = settings->value("settings/nick", conf.ni).toString();
+     config.chan = settings->value("settings/channel", conf.chan).toString();
+     settings->endGroup();
+
+     return config;
 }
+
 
 QString Bot::rename( QString oldn, QString q)
 {
@@ -121,29 +115,91 @@ QString Bot::rename( QString oldn, QString q)
             return msg;
         }
     }
+    return msg;
 }
 
-void Bot::loop()
+void Bot::channel_msg(const QString *msg)
 {
-while (1)
-{
-    QString c = read_blocked();
-    qDebug() << c;
-    if (c.indexOf("!quit", 0)!= -1)
-        disconnect();
-    if ((c.indexOf("PRIVMSG "+ channel, 0) != -1) && (c.indexOf(nick , 0) != -1))
+    if (msg == NULL)
+        return;
+
+    if (msg->indexOf("!quit", 0)!= -1)
+        disconnected();
+
+    if ((msg->indexOf("PRIVMSG "+ channel, 0) != -1) && (msg->indexOf(nick , 0) != -1))
     {
         send("PRIVMSG " + channel + " : i hear you\n");
         socket->waitForBytesWritten();
     }
-    if (c.indexOf("PING", 0)!= -1)
+
+    if (msg->indexOf("PING", 0)!= -1)
     {
         send("PONG " + server + "\n");
     }
-    if ((c.indexOf("PRIVMSG "+ channel, 0) != -1) && (c.indexOf("!nick" , 0) != -1))
+
+    if ((msg->indexOf("PRIVMSG "+ channel, 0) != -1) && (msg->indexOf("!nick" , 0) != -1))
     {
-        nick = rename(nick, c);
+        nick = rename(nick, *msg);
     }
 }
-}
+
+ void Bot::readyRead()
+ {
+     QString str = read_blocked();
+     QStringList list = str.split(QLatin1Char('\n'), QString::SkipEmptyParts);
+
+     QStringList::iterator  it;
+     QString head;
+     QString msg;
+     for (it = list.begin(); it!=list.end(); ++it)
+     {
+         QString s=*it;
+
+         qDebug() << "<<" << s;
+
+         int n0=s.indexOf(':');                  // ищем 0е :
+         if (s[0] != ':')
+             continue;    //qDebug()<<"s[0] -"<<s[0]<<endl;  //
+         if (s.indexOf(':', n0+1)==-1)
+             continue;
+         {
+             int n1=s.indexOf(':', n0+1);            // ищем 1е :
+             QStringRef head(&s, n0, n1-n0);
+            // qDebug()<<"head - "<<head<<endl;
+             QStringRef msg(&s, n1, (*it).length()-n1);
+             //qDebug()<<"msg -"<<msg<<endl;
+              QStringList header_fields;
+              QString str3;
+              str3.append(head);
+              header_fields = str3.split(QLatin1Char(' '), QString::SkipEmptyParts);
+              bool ok;
+              int type = header_fields[1].toInt(&ok, 10);
+              if ((header_fields[0].indexOf(server) != -1) && type == 20 && (header_fields[2].indexOf(server) != -1)) {
+                  //исключение для 1 строки где нет nick
+                  qDebug() << "!! type: " << type << "reply form server: " << msg;
+                  send("NICK "+ nick +"\n");
+                  send("USER qwert_zaq 8 x : qwert_zaq\n");
+
+              } else if ((header_fields[0].indexOf(server) != -1) && ok && (header_fields[2].indexOf(nick) != -1)) {
+                  qDebug() << "!! type: " << type << "reply form server: " << msg;
+
+                  switch (type)
+                  {
+                      case 1 :
+                          join();
+                          break;
+                  }
+              } else if (header_fields[1].indexOf("JOIN") != -1 && msg.indexOf(channel) != -1) {
+                  qDebug() << "!! joined to " << msg;
+                  send("PRIVMSG " + channel + " :hi from netcat\n");
+              } else if (header_fields[1].indexOf("PRIVMSG") != -1 && header_fields[2].indexOf(channel) != -1) {
+                  qDebug() << "!! channel msg: " << msg;
+                  channel_msg(msg.string());
+              } else {
+                  qDebug()<<"!! cannot parse\n";
+              }
+
+           }
+       }
+   }
 

@@ -1,49 +1,73 @@
+#include <QCoreApplication>
 #include <QTcpSocket>
 #include <QFile>
 
 #ifndef IRCBOT_H
 #define IRCBOT_H
 
-#include <QTcpSocket>
-#include <QFile>
+#define DEFAULT_SERVER "irc.lucky.net"
+#define DEFAULT_PORT 6667
+#define DEFAULT_NICK "test_bot"
+#define DEFAULT_CHAN "#ruschat"
 
-class Bot
+struct BotConfig
 {
+    QString ser;
+    int por ;
+    QString ni ;
+    QString chan;
+ };
+
+class Bot : public QObject
+{
+    Q_OBJECT;
     int port;
     QString server;
     QString nick;
     QString channel;
     QTcpSocket *socket;
 
-    public :
-     Bot (const QString _server = "irc.lucky.net",
-          const int _port = 6667,
-          const  QString _nick ="test_bot",
-          const QString _channel = "#ruschat" )
-     {
-         port = _port;
-         server = _server;
-         nick = _nick;
-         channel = _channel;
-         socket = new QTcpSocket(NULL);
+public :
+    Bot ()
+    {
+        BotConfig login = config_load();
+        port = login.por;
+        server = login.ser;
+        nick = login.ni;
+        channel = login.chan;
+        socket = new QTcpSocket(NULL);
+
+        QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
+        QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
+
+        QObject::connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+        //QObject::connect(socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
      };
 
-    ~Bot () {
+     ~Bot ()
+     {
          delete socket;
      }
-
 
     QString read_blocked();
     bool connect();
     void send(QString );
-    void registr();
+    void config_save();
+    QString rename(QString , QString);
+ //   void registr();
     void codepage();
     void join();
-    void config_save();
-    void disconnect();
-    void config_load();
-    QString rename(QString , QString);
-    void loop();
+
+    BotConfig config_load();
+
+    void channel_msg(const QString *msg);
+
+public slots :
+     //void connected ();
+     void disconnected();
+     void readyRead();
+
+//  signals:
 };
 
 #endif

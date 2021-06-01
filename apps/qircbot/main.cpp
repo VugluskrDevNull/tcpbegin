@@ -1,19 +1,15 @@
-﻿#include <qircbot.h>
+#include <qircbot.h>
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    Bot  * botptr = new Bot;
-    botptr->config_load();
+    QCoreApplication a(argc, argv);
+
+    Bot *botptr = new Bot;
     if (!(botptr->connect()))
         return  1;
-    botptr->registr();
-    botptr->codepage();
-    botptr->join();
-    botptr->loop();
-    return 0;
+
+    return a.exec();
 }
-
-
 
