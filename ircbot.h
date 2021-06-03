@@ -18,9 +18,10 @@ struct BotConfig
     QString chan;
  };
 
-class Bot : public QObject
+class Bot : public  QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+public:
     int port;
     QString server;
     QString nick;
@@ -41,7 +42,7 @@ public :
         QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
         QObject::connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
         //QObject::connect(socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
-        QObject::connect(socket, SIGNAL(signal_channel_joined()),this, SLOT(slot_channel_joined()));
+        QObject::connect(this, SIGNAL(signal_channel_joined()),this, SLOT(slot_channel_joined()));
      };
      ~Bot ()
      {

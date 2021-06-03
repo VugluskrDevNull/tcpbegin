@@ -1,6 +1,7 @@
-#include <iostream>
+#include <iostream>                                                            // libircbot.cpp
 #include <QSettings>
 #include "ircbot.h"
+
 using namespace std;
 
 BotConfig conf = { .ser = DEFAULT_SERVER, .por = DEFAULT_PORT, .ni = DEFAULT_NICK, .chan = DEFAULT_CHAN };
@@ -45,7 +46,6 @@ void Bot::codepage()
 void Bot::join()
 {
     send("JOIN " + channel + "\n");
-    emit signal_channel_joined ();
 }
 
 void Bot::config_save()
@@ -125,66 +125,59 @@ void Bot::channel_msg(const QString *msg)
         socket->waitForBytesWritten();
     }
 
-    if (msg->indexOf("PING", 0)!= -1)
-    {
-        send("PONG " + server + "\n");
-    }
-
     if ((msg->indexOf("PRIVMSG "+ channel, 0) != -1) && (msg->indexOf("!nick" , 0) != -1))
     {
         nick = rename(nick, *msg);
     }
+
 }
 
  void Bot::readyRead()
  {
      QString str = read_blocked();
      QStringList list = str.split(QLatin1Char('\n'), QString::SkipEmptyParts);
-
      QStringList::iterator  it;
-     QString head;
      QString msg;
      for (it = list.begin(); it!=list.end(); ++it)
      {
          QString s=*it;
-
          qDebug() << "<<" << s;
-
+         if (s.indexOf("PING",0)!= -1) {                     // ping ne rab
+             send("PONG " + server + "\n");
+         }
          int n0=s.indexOf(':');                  // ищем 0е :
          if (s[0] != ':')
-             continue;    //qDebug()<<"s[0] -"<<s[0]<<endl;  //
+             continue;
          if (s.indexOf(':', n0+1)==-1)
              continue;
          {
              int n1=s.indexOf(':', n0+1);            // ищем 1е :
              QStringRef head(&s, n0, n1-n0);
-            // qDebug()<<"head - "<<head<<endl;
+            // qDebug()<<"head - "<<head<<endl;            //
              QStringRef msg(&s, n1, (*it).length()-n1);
-             //qDebug()<<"msg -"<<msg<<endl;
-              QStringList header_fields;
-              QString str3;
-              str3.append(head);
-              header_fields = str3.split(QLatin1Char(' '), QString::SkipEmptyParts);
-              bool ok;
-              int type = header_fields[1].toInt(&ok, 10);
-              if ((header_fields[0].indexOf(server) != -1) && type == 20 && (header_fields[2].indexOf(server) != -1)) {
-                  //исключение для 1 строки где нет nick
-                  qDebug() << "!! type: " << type << "reply form server: " << msg;
-                  send("NICK "+ nick +"\n");
-                  send("USER qwert_zaq 8 x : qwert_zaq\n");
-
-              } else if ((header_fields[0].indexOf(server) != -1) && ok && (header_fields[2].indexOf(nick) != -1)) {
-                  qDebug() << "!! type: " << type << "reply form server: " << msg;
-
-                  switch (type)
-                  {
-                      case 1 :
-                          join();
-                          break;
+            //qDebug()<<"msg -"<<msg<<endl;               //
+             QStringList header_fields;
+             QString str3;
+             str3.append(head);
+             header_fields = str3.split(QLatin1Char(' '), QString::SkipEmptyParts);
+             bool ok;
+             int type = header_fields[1].toInt(&ok, 10);
+             if ((header_fields[0].indexOf(server) != -1) && type == 20 && (header_fields[2].indexOf(server) != -1)) {
+                 //исключение для 1 строки где нет nick
+                 qDebug() << "!! type: " << type << "reply form server: " << msg;
+                 send("NICK "+ nick +"\n");
+                 send("USER qwert_zaq 8 x : qwert_zaq\n");
+             } else if ((header_fields[0].indexOf(server) != -1) && ok && (header_fields[2].indexOf(nick) != -1)) {
+                 qDebug() << "!! type: " << type << "reply form server: " << msg;
+                 switch (type)
+                 {
+                     case 1 :
+                         join();
+                         break;
                   }
               } else if (header_fields[1].indexOf("JOIN") != -1 && msg.indexOf(channel) != -1) {
                   qDebug() << "!! joined to " << msg;
-                  send("PRIVMSG " + channel + " :hi from netcat\n");
+                  emit signal_channel_joined ();
               } else if (header_fields[1].indexOf("PRIVMSG") != -1 && header_fields[2].indexOf(channel) != -1) {
                   qDebug() << "!! channel msg: " << msg;
                   channel_msg(msg.string());
@@ -199,7 +192,7 @@ void Bot::channel_msg(const QString *msg)
  void Bot :: slot_channel_joined()
  {
      send("PRIVMSG " + channel + " :hi from netcat\n");
-     send("SETTOPIC " + channel + " topic\n");
+     send("TOPIC " + channel + " topic\n");
  }
 
 

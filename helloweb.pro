@@ -28,6 +28,3 @@ QMAKE_EXTRA_TARGETS += before_build makefilehook
 
 HEADERS += \
     ircbot.h
-
-
-
