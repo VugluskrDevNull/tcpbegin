@@ -61,6 +61,8 @@ public :
     BotConfig config_load();
 
     void channel_msg(const QString *msg);
+signals :
+    void userInput(QString);
 
 public slots :
      //void connected ();

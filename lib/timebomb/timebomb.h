@@ -4,7 +4,7 @@
 #include <QTimer>
 #include <QTime>
 #include <QRandomGenerator>
-#include "console.h"
+#include "Interface.h"
 
 class GameTimeBomb: public QObject
 {
@@ -15,7 +15,7 @@ class GameTimeBomb: public QObject
     inline static constexpr const char* const provodki[] ={"krasniy", "orangeviy", "jeltiy", "zelyoniy", "goluboy", "siniy", "fioletoviy"};
     void start_game();
     public:
-    GameTimeBomb(Console * _iface)  {
+    GameTimeBomb(Interface * _iface)  {
         iface=_iface;
         timer = new QTimer();
         timer->setSingleShot(true);

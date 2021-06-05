@@ -120,6 +120,7 @@ QString Bot::rename( QString oldn, QString q)
 
 void Bot::channel_msg(const QString *msg)
 {
+    emit userInput(*msg);
     if (msg == NULL)
         return;
 

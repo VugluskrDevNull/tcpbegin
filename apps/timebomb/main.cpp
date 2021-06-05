@@ -7,16 +7,13 @@
 #include <QTimer>
 #include <QTime>
 
-#include <timebomb.h>
+ #include "console.h"
+ #include <timebomb.h>
 
 int main(int argc, char** argv)
 {
 
     QCoreApplication app(argc, argv);
-
-  //  Bot *botptr = new Bot;
-  //  if (!(botptr->connect()))
-  //      return  1;
 
     qDebug()<<"enter !bomb\n";
     Console *cons = new Console();
