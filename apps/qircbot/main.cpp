@@ -1,15 +1,29 @@
 #include <qircbot.h>
-
+#include "timebomb.h"
+#include "console.h"
 using namespace std;
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-
-    Bot *botptr = new Bot;
-    if (!(botptr->connect()))
-        return  1;
-
+    Bot * pb= new Bot;
+    GameTimeBomb * pg = new GameTimeBomb (pb);
+    if (!(pb->connect()))
+        return  1;    
+    QObject::connect(pb, SIGNAL (userInput(QString)), pg,  SLOT(userInput(QString)));  //  запуск интерфейса онлайн
+    QObject::connect(pb, SIGNAL(quit()), &a, SLOT(quit()));
     return a.exec();
 }
 
+/*
+    QCoreApplication app(argc, argv);
+
+    qDebug()<<"enter !bomb\n";
+    Console *cons = new Console();
+    GameTimeBomb *pg = new GameTimeBomb(cons);
+    cons->run();
+    QObject::connect(cons, SIGNAL (userInput(QString)), pg,  SLOT(userInput(QString)));    //  запуск интерфейса офлайн
+    QObject::connect(cons, SIGNAL(quit()), &app, SLOT(quit()));
+    QObject::connect(cons, SIGNAL(quit()), pg, SLOT(quit()));
+    return app.exec();
+ */

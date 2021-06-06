@@ -30,11 +30,12 @@ DESTDIR = ../..
 
 INCLUDEPATH += \
     ../../common \
+    ../../lib/timebomb \
     ../../lib/qircbot
 
 LIBS += \
     -L../.. \
-    -lcommon -lqircbot
+    -lcommon -lqircbot -ltimebomb
 
 HEADERS += \
     ../../common/Interface.h \

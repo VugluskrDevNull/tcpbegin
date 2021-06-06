@@ -12,7 +12,7 @@ DESTDIR = ../..
 
 INCLUDEPATH += \
     ../../common
-
+    ../../lib/qircbot
 SOURCES += \
         qircbot.cpp
 

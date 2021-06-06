@@ -35,16 +35,9 @@ bool Bot::connect()
 void Bot::send(QString str)
 {
     qDebug()<<">> " << str;
-
     socket->write(str.toLatin1().constData());
 }
-/*
-void Bot::registr()
-{
-    send( "NICK "+ nick +"\n");
-    send("USER qwert_zaq 8 x : qwert_zaq\n");
-}
-*/
+
 void Bot::codepage()
 {
     send("CODEPAGE UTF-8\n");
@@ -120,7 +113,8 @@ QString Bot::rename( QString oldn, QString q)
 
 void Bot::channel_msg(const QString *msg)
 {
-    emit userInput(*msg);
+     emit userInput(*msg);                                    // запуск игры
+
     if (msg == NULL)
         return;
 
@@ -133,20 +127,18 @@ void Bot::channel_msg(const QString *msg)
         socket->waitForBytesWritten();
     }
 
-    if (msg->indexOf("PING", 0)!= -1)
-    {
-        send("PONG " + server + "\n");
-    }
-
     if ((msg->indexOf("PRIVMSG "+ channel, 0) != -1) && (msg->indexOf("!nick" , 0) != -1))
     {
         nick = rename(nick, *msg);
-    }
-}
+    }   
+ }
 
  void Bot::readyRead()
  {
      QString str = read_blocked();
+     if (str.indexOf("PING", 0)!= -1){                        // ping
+         send("PONG " + server + "\n");
+     }
      QStringList list = str.split(QLatin1Char('\n'), QString::SkipEmptyParts);
 
      QStringList::iterator  it;
@@ -154,10 +146,8 @@ void Bot::channel_msg(const QString *msg)
      QString msg;
      for (it = list.begin(); it!=list.end(); ++it)
      {
-         QString s=*it;
-
+         QString s = *it;
          qDebug() << "<<" << s;
-
          int n0=s.indexOf(':');                  // ищем 0е :
          if (s[0] != ':')
              continue;    //qDebug()<<"s[0] -"<<s[0]<<endl;  //
@@ -166,9 +156,9 @@ void Bot::channel_msg(const QString *msg)
          {
              int n1=s.indexOf(':', n0+1);            // ищем 1е :
              QStringRef head(&s, n0, n1-n0);
-            // qDebug()<<"head - "<<head<<endl;
+             qDebug()<<"head - "<<head<<endl;           // qdebug  head
              QStringRef msg(&s, n1, (*it).length()-n1);
-             //qDebug()<<"msg -"<<msg<<endl;
+             qDebug()<<"msg -"<<msg<<endl;           // qdebug  msg
               QStringList header_fields;
               QString str3;
               str3.append(head);
@@ -180,7 +170,6 @@ void Bot::channel_msg(const QString *msg)
                   qDebug() << "!! type: " << type << "reply form server: " << msg;
                   send("NICK "+ nick +"\n");
                   send("USER qwert_zaq 8 x : qwert_zaq\n");
-
               } else if ((header_fields[0].indexOf(server) != -1) && ok && (header_fields[2].indexOf(nick) != -1)) {
                   qDebug() << "!! type: " << type << "reply form server: " << msg;
 
@@ -196,11 +185,11 @@ void Bot::channel_msg(const QString *msg)
               } else if (header_fields[1].indexOf("PRIVMSG") != -1 && header_fields[2].indexOf(channel) != -1) {
                   qDebug() << "!! channel msg: " << msg;
                   channel_msg(msg.string());
-              } else {
+              }  else {
                   qDebug()<<"!! cannot parse\n";
               }
-
            }
-       }
+      }
+
    }
 

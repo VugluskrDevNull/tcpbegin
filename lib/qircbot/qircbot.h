@@ -1,6 +1,8 @@
 #include <QCoreApplication>
 #include <QTcpSocket>
 #include <QFile>
+#include "Interface.h"
+
 
 #ifndef IRCBOT_H
 #define IRCBOT_H
@@ -18,7 +20,7 @@ struct BotConfig
     QString chan;
  };
 
-class Bot : public QObject
+class Bot : public Interface
 {
     Q_OBJECT;
     int port;
@@ -36,12 +38,8 @@ public :
         nick = login.ni;
         channel = login.chan;
         socket = new QTcpSocket(NULL);
-
-        QObject::connect(socket, SIGNAL(connected()), this, SLOT(connected ()));
         QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected ()));
-
         QObject::connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
-        //QObject::connect(socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
      };
 
      ~Bot ()
@@ -61,15 +59,13 @@ public :
     BotConfig config_load();
 
     void channel_msg(const QString *msg);
-signals :
-    void userInput(QString);
 
 public slots :
-     //void connected ();
      void disconnected();
      void readyRead();
-
-//  signals:
+    //  void userInput(QString);
+  signals:
+      void userInput(QString);
 };
 
 #endif

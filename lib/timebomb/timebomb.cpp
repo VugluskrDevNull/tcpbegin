@@ -11,7 +11,7 @@
 
 void GameTimeBomb::slotTimerAlarm()
 {
-    qDebug()<<"BOOM!!!BANG!!!";
+    iface->send("BOOM!!!BANG!!!");
     state = STATE_OFF;
 }
 
