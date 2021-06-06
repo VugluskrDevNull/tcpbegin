@@ -6,12 +6,11 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    Bot * pb= new Bot;
-    GameTimeBomb * pg = new GameTimeBomb (pb);
-    if (!(pb->connect()))
+    Bot * bot= new Bot;
+    GameTimeBomb * game = new GameTimeBomb (bot);
+    if (!(bot->connect()))
         return  1;    
-    QObject::connect(pb, SIGNAL (userInput(QString)), pg,  SLOT(userInput(QString)));  //  запуск интерфейса онлайн
-    QObject::connect(pb, SIGNAL(quit()), &a, SLOT(quit()));
+    QObject::connect(bot, SIGNAL (userInput(QString)), game,  SLOT(userInput(QString)));  //  запуск игры онлайн
     return a.exec();
 }
 

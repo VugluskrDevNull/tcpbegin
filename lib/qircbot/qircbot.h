@@ -52,20 +52,16 @@ public :
     void send(QString );
     void config_save();
     QString rename(QString , QString);
- //   void registr();
     void codepage();
     void join();
-
     BotConfig config_load();
-
     void channel_msg(const QString *msg);
 
-public slots :
-     void disconnected();
-     void readyRead();
-    //  void userInput(QString);
-  signals:
-      void userInput(QString);
+    signals:
+        void userInput(QString);
+    public slots :
+         void disconnected();
+         void readyRead();
 };
 
 #endif

@@ -156,9 +156,9 @@ void Bot::channel_msg(const QString *msg)
          {
              int n1=s.indexOf(':', n0+1);            // ищем 1е :
              QStringRef head(&s, n0, n1-n0);
-             qDebug()<<"head - "<<head<<endl;           // qdebug  head
+           // qDebug()<<"head - "<<head<<endl;           // qdebug  head
              QStringRef msg(&s, n1, (*it).length()-n1);
-             qDebug()<<"msg -"<<msg<<endl;           // qdebug  msg
+           // qDebug()<<"msg -"<<msg<<endl;           // qdebug  msg
               QStringList header_fields;
               QString str3;
               str3.append(head);
