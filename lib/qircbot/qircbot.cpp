@@ -31,8 +31,20 @@ bool Bot::connect()
     qDebug() << "Connected";
     return  1;
 }
-
+/*
 void Bot::send(QString str)
+{
+    qDebug()<<">> " << str;
+    socket->write(str.toLatin1().constData());
+}
+*/
+
+void Bot::send(QString msg)                         // отработка send
+{
+    send_raw("PRIVMSG "+ channel + "  :" + msg);
+}
+
+void Bot::send_raw(QString str)                     // отработка send
 {
     qDebug()<<">> " << str;
     socket->write(str.toLatin1().constData());
@@ -40,12 +52,12 @@ void Bot::send(QString str)
 
 void Bot::codepage()
 {
-    send("CODEPAGE UTF-8\n");
+    send_raw("CODEPAGE UTF-8\n");
 }
 
 void Bot::join()
 {
-    send("JOIN " + channel + "\n");
+    send_raw("JOIN " + channel + "\n");
 }
 
 void Bot::config_save()
@@ -97,7 +109,7 @@ QString Bot::rename( QString oldn, QString q)
         else
         {
             QString h = "NICK "+msg+'\n';
-            send(h);
+            send_raw(h);
             QString s = read_blocked();
              if (s.indexOf("Nickname is already in use" , 0) != -1)
             {
@@ -123,7 +135,7 @@ void Bot::channel_msg(const QString *msg)
 
     if ((msg->indexOf("PRIVMSG "+ channel, 0) != -1) && (msg->indexOf(nick , 0) != -1))
     {
-        send("PRIVMSG " + channel + " : i hear you\n");
+        send_raw("PRIVMSG " + channel + " : i hear you\n");
         socket->waitForBytesWritten();
     }
 
@@ -137,7 +149,7 @@ void Bot::channel_msg(const QString *msg)
  {
      QString str = read_blocked();
      if (str.indexOf("PING", 0)!= -1){                        // ping
-         send("PONG " + server + "\n");
+         send_raw("PONG " + server + "\n");
      }
      QStringList list = str.split(QLatin1Char('\n'), QString::SkipEmptyParts);
 
@@ -168,8 +180,8 @@ void Bot::channel_msg(const QString *msg)
               if ((header_fields[0].indexOf(server) != -1) && type == 20 && (header_fields[2].indexOf(server) != -1)) {
                   //исключение для 1 строки где нет nick
                   qDebug() << "!! type: " << type << "reply form server: " << msg;
-                  send("NICK "+ nick +"\n");
-                  send("USER qwert_zaq 8 x : qwert_zaq\n");
+                  send_raw("NICK "+ nick +"\n");
+                  send_raw("USER qwert_zaq 8 x : qwert_zaq\n");
               } else if ((header_fields[0].indexOf(server) != -1) && ok && (header_fields[2].indexOf(nick) != -1)) {
                   qDebug() << "!! type: " << type << "reply form server: " << msg;
 
@@ -181,7 +193,7 @@ void Bot::channel_msg(const QString *msg)
                   }
               } else if (header_fields[1].indexOf("JOIN") != -1 && msg.indexOf(channel) != -1) {
                   qDebug() << "!! joined to " << msg;
-                  send("PRIVMSG " + channel + " :hi from netcat\n");
+                  send_raw("PRIVMSG " + channel + " :hi from netcat\n");
               } else if (header_fields[1].indexOf("PRIVMSG") != -1 && header_fields[2].indexOf(channel) != -1) {
                   qDebug() << "!! channel msg: " << msg;
                   channel_msg(msg.string());

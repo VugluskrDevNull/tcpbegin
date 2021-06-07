@@ -46,7 +46,7 @@ public :
      {
          delete socket;
      }
-
+    void send_raw(QString);                // отработка send
     QString read_blocked();
     bool connect();
     void send(QString );
