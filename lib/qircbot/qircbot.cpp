@@ -41,7 +41,7 @@ void Bot::send(QString str)
 
 void Bot::send(QString msg)                         // отработка send
 {
-    send_raw("PRIVMSG "+ channel + "  :" + msg);
+    send_raw("PRIVMSG "+ channel + "  :" + msg + "\n");
 }
 
 void Bot::send_raw(QString str)                     // отработка send
