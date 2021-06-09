@@ -8,7 +8,7 @@
 #define IRCBOT_H
 
 #define DEFAULT_SERVER "irc.lucky.net"
-#define DEFAULT_PORT 6667
+#define DEFAULT_PORT 7777
 #define DEFAULT_NICK "test_bot"
 #define DEFAULT_CHAN "#ruschat"
 

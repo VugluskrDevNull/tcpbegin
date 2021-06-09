@@ -23,7 +23,8 @@ void GameTimeBomb::userInput(QString qs)
         if (state == STATE_GAME) return;
         start_game();
     }
-   if(state == STATE_GAME && qs==provodki_rand[yes])    // проверяем угадал ли пользователь цвет проводка
+   if(state == STATE_GAME && qs==provodki_rand[yes])    // проверяем угадал ли пользователь цвет проводка  офлайн
+    //if(state == STATE_GAME && (qs.indexOf( provodki_rand[yes] , 0)))    // проверяем угадал ли пользователь цвет проводка
     {
         iface->send("WIN!");
         timer->stop();

@@ -21,7 +21,7 @@ QString Bot::read_blocked()
 
 bool Bot::connect()
 {
-    socket->connectToHost(server.toLatin1().constData(), port);
+    socket->connectToHost(server.toUtf8().constData(), port);
     //    soc->connectToHost("127.0.0.1", 4567);                                 // lochost
     if (!socket->waitForConnected(1000))
     {
@@ -31,23 +31,16 @@ bool Bot::connect()
     qDebug() << "Connected";
     return  1;
 }
-/*
-void Bot::send(QString str)
-{
-    qDebug()<<">> " << str;
-    socket->write(str.toLatin1().constData());
-}
-*/
 
-void Bot::send(QString msg)                         // отработка send
+void Bot::send(QString msg)
 {
     send_raw("PRIVMSG "+ channel + "  :" + msg + "\n");
 }
 
-void Bot::send_raw(QString str)                     // отработка send
+void Bot::send_raw(QString str)
 {
     qDebug()<<">> " << str;
-    socket->write(str.toLatin1().constData());
+    socket->write(str.toUtf8().constData());
 }
 
 void Bot::codepage()
@@ -125,8 +118,6 @@ QString Bot::rename( QString oldn, QString q)
 
 void Bot::channel_msg(const QString *msg)
 {
-     emit userInput(*msg);                                    // запуск игры
-
     if (msg == NULL)
         return;
 
@@ -169,7 +160,11 @@ void Bot::channel_msg(const QString *msg)
              int n1=s.indexOf(':', n0+1);            // ищем 1е :
              QStringRef head(&s, n0, n1-n0);
            // qDebug()<<"head - "<<head<<endl;           // qdebug  head
-             QStringRef msg(&s, n1, (*it).length()-n1);
+           //  QStringRef msg(&s, n1, (*it).length()-n1);
+             /*******************************************************************************************************/
+             QStringRef msg(&s, n1 + 1, (*it).length() - n1 - 2); // - 2: remove \r\n in the end удаляем : и \r
+             emit userInput(msg.toString());                                              // запуск игры со строкой без : и \r
+             /*******************************************************************************************************/
            // qDebug()<<"msg -"<<msg<<endl;           // qdebug  msg
               QStringList header_fields;
               QString str3;
