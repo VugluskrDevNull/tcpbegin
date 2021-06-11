@@ -11,7 +11,7 @@ class GameTimeBomb: public QObject
     Q_OBJECT
     Interface * iface;
     enum { STATE_IDLE = 1, STATE_GAME, STATE_OFF };
-    inline static constexpr const char* const provodki[] ={"krasniy", "orangeviy", "jeltiy", "zelyoniy", "goluboy", "siniy", "fioletoviy"};
+    inline static constexpr const char* const provodki[] ={"красный", "оранжевый", "жёлтый", "зелёный", "голубой", "синий", "фиолетовый"};
     void start_game();
     public:
     GameTimeBomb(Interface * _iface)  {

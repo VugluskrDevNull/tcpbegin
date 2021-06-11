@@ -26,7 +26,7 @@ void GameTimeBomb::userInput(QString qs)
    if(state == STATE_GAME && qs==provodki_rand[yes])    // проверяем угадал ли пользователь цвет проводка  офлайн
     //if(state == STATE_GAME && (qs.indexOf( provodki_rand[yes] , 0)))    // проверяем угадал ли пользователь цвет проводка
     {
-        iface->send("WIN!");
+        iface->send("Разминировано!");
         timer->stop();
         state = STATE_OFF;
     }
@@ -56,9 +56,9 @@ void GameTimeBomb::start_game()
     }
 
     yes =  QRandomGenerator::global()->bounded(0, n);
-    qDebug()<<" otrej "<<provodki_rand[yes]<<endl;
+    qDebug()<<" otrej - "<<yes<<endl;
     timer->start(30000);
-    iface->send("pered Vami bomba s taymerom ustanovlennym na 30 sec i "+ QVariant(n).toString() +" provodkov");
+    iface->send("перед Вами бомба с таймером установленным на 30 секунд и "+ QVariant(n).toString() +" проводков");
     for (int i=0; i<n; i++)
     {
         iface->send(provodki_rand[i]);

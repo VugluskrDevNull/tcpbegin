@@ -126,7 +126,7 @@ void Bot::channel_msg(const QString *msg)
 
     if ((msg->indexOf("PRIVMSG "+ channel, 0) != -1) && (msg->indexOf(nick , 0) != -1))
     {
-        send_raw("PRIVMSG " + channel + " : i hear you\n");
+        send_raw("PRIVMSG " + channel + " : ась?\n");
         socket->waitForBytesWritten();
     }
 
@@ -188,7 +188,7 @@ void Bot::channel_msg(const QString *msg)
                   }
               } else if (header_fields[1].indexOf("JOIN") != -1 && msg.indexOf(channel) != -1) {
                   qDebug() << "!! joined to " << msg;
-                  send_raw("PRIVMSG " + channel + " :hi from netcat\n");
+                  send_raw("PRIVMSG " + channel + " :здрасти!\n");
               } else if (header_fields[1].indexOf("PRIVMSG") != -1 && header_fields[2].indexOf(channel) != -1) {
                   qDebug() << "!! channel msg: " << msg;
                   channel_msg(msg.string());
