@@ -2,6 +2,7 @@
 #include "console.h"
 #include <QString>
 #include <QDebug>
+#include <QTextStream>
 
 Console::Console()
 {
@@ -41,6 +42,6 @@ void Console::readCommand()
 
 void Console::send(QString str)
 {
-    qDebug() << str << '\n';
+    QTextStream(stdout) << str << '\n';
 }
 

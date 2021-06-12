@@ -1,1 +1,10 @@
-helloweb.pro.user
+*.pro.user
+moc_*
+*.sw?
+.qmake.stash
+Makefile
+*.o
+*.a
+*.prl
+*.orig
+*.bak
