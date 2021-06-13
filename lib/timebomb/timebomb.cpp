@@ -11,8 +11,14 @@
 
 void GameTimeBomb::slotTimerAlarm()
 {
-    iface->send("BOOM!!!BANG!!!");
+  //  iface->send("BOOM!!!BANG!!!");
+    emit send("BOOM!!!BANG!!!");
     state = STATE_OFF;
+}
+
+void GameTimeBomb::send (QString s)
+{
+    iface->send(s);
 }
 
 void GameTimeBomb::userInput(QString qs)
@@ -26,7 +32,8 @@ void GameTimeBomb::userInput(QString qs)
    if(state == STATE_GAME && qs==provodki_rand[yes])    // проверяем угадал ли пользователь цвет проводка  офлайн
     //if(state == STATE_GAME && (qs.indexOf( provodki_rand[yes] , 0)))    // проверяем угадал ли пользователь цвет проводка
     {
-        iface->send("Разминировано!");
+      //  iface->send("Разминировано!");
+        emit   send("Разминировано!");           // send как слот
         timer->stop();
         state = STATE_OFF;
     }
@@ -58,10 +65,12 @@ void GameTimeBomb::start_game()
     yes =  QRandomGenerator::global()->bounded(0, n);
     qDebug()<<" otrej - "<<yes<<endl;
     timer->start(30000);
-    iface->send("перед Вами бомба с таймером установленным на 30 секунд и "+ QVariant(n).toString() +" проводков");
+    // iface->send("перед Вами бомба с таймером установленным на 30 секунд и "+ QVariant(n).toString() +" проводков");
+    emit   send("перед Вами бомба с таймером установленным на 30 секунд и "+ QVariant(n).toString() +" проводков");
     for (int i=0; i<n; i++)
     {
-        iface->send(provodki_rand[i]);
+        // iface->send(provodki_rand[i]);
+        emit   send(provodki_rand[i]);
     }
 }
 

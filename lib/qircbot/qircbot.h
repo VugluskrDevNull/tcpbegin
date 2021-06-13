@@ -46,10 +46,10 @@ public :
      {
          delete socket;
      }
-    void send_raw(QString);                // отработка send
+    void send_raw(QString);
     QString read_blocked();
     bool connect();
-    void send(QString );
+
     void config_save();
     QString rename(QString , QString);
     void codepage();
@@ -59,9 +59,11 @@ public :
 
     signals:
         void userInput(QString);
+
     public slots :
          void disconnected();
          void readyRead();
+         void send(QString );
 };
 
 #endif
