@@ -37,4 +37,5 @@ LIBS += \
 HEADERS += \
     ../../common/Interface.h \
     ../../common/console.h   \
-    ../../lib/timebomb/timebomb.h
+    ../../lib/timebomb/timebomb.h \
+    ../../lib/qircbot/qircbot.h   \\ добавил

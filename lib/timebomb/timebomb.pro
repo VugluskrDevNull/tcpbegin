@@ -18,5 +18,6 @@ SOURCES += \
 
 HEADERS += \
     ../../common/Interface.h \
-    timebomb.h
+    timebomb.h   \
+    ../../lib/qircbot/qircbot.h   \\ добавил
 
