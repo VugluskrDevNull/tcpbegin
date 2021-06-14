@@ -8,7 +8,7 @@
 #include <QTime>
 
  #include "console.h"
-#include "qircbot.h"        // не видится
+ #include "Interface.h"        //
  #include <timebomb.h>
 
 int main(int argc, char** argv)
@@ -21,13 +21,13 @@ int main(int argc, char** argv)
 
     qDebug()<<"enter !bomb\n";
     Console *cons = new Console();
-    Bot * bot = new Bot;
+    Bot * bot;
     GameTimeBomb * game = new GameTimeBomb(cons);
    //  pg->game_bomb("!bomb");
    //  pg->game_bomb("krasniy");
     cons->run();
     QObject::connect(cons, SIGNAL (userInput(QString)), game,  SLOT(userInput(QString)));    //  запуск игры офлайн
-   QObject::connect(game, SIGNAL (userInput(QString)), bot,  SLOT(send(QString)));           // send как слт
+   QObject::connect(game, SIGNAL (send(QString)), bot,  SLOT(send(QString)));           // send как слт
     QObject::connect(cons, SIGNAL(quit()), &app, SLOT(quit()));
     QObject::connect(cons, SIGNAL(quit()), game, SLOT(quit()));
     return app.exec();

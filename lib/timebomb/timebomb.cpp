@@ -15,12 +15,7 @@ void GameTimeBomb::slotTimerAlarm()
     emit send("BOOM!!!BANG!!!");
     state = STATE_OFF;
 }
-/*
-void GameTimeBomb::send (QString s)
-{
-    iface->send(s);
-}
-*/
+
 
 void GameTimeBomb::userInput(QString qs)
 {

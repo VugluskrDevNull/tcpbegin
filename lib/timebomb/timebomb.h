@@ -25,7 +25,8 @@ class GameTimeBomb: public QObject
     void slotTimerAlarm();
     void userInput(QString);
     void quit();
-  //  void send(QString);           // send как слот
+    signals :
+    void send(QString);           // send как слот
     private:
     QTimer *timer;
     int n;                              // число проводков
