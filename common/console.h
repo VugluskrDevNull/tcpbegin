@@ -19,7 +19,6 @@ class Console : public Interface
 public:
     Console();
     void run();
-    void send(QString);
 signals:
     void quit();
     void userInput(QString);
@@ -34,6 +33,8 @@ private:
 
 private slots:
     void readCommand();
+signals:
+     void send(QString);
 };
 
 #endif // CONSOLE_H
