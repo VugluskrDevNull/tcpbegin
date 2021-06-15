@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
         if (!(bot->connect()))
             return  1;
         QObject::connect(bot, SIGNAL (userInput(QString)), game,  SLOT(userInput(QString)));  //  запуск игры онлайн
+         QObject::connect(game, SIGNAL (send(QString)), bot,  SLOT(send(QString)));           // send как слoт
+
         return a.exec();
 }
 

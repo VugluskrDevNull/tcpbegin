@@ -26,7 +26,7 @@ int main(int argc, char** argv)
    //  pg->game_bomb("krasniy");
     cons->run();
     QObject::connect(cons, SIGNAL (userInput(QString)), game,  SLOT(userInput(QString)));    //  запуск игры офлайн
-    QObject::connect(game, SIGNAL (send(QString)), cons,  SLOT(send(QString)));           // send как слт
+    QObject::connect(game, SIGNAL (send(QString)), cons,  SLOT(send(QString)));
     QObject::connect(cons, SIGNAL(quit()), &app, SLOT(quit()));
     QObject::connect(cons, SIGNAL(quit()), game, SLOT(quit()));
     return app.exec();

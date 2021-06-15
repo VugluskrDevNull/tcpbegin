@@ -38,9 +38,9 @@ void Console::readCommand()
         emit userInput(retline);
     }
 }
-/*
+
 void Console::send(QString str)
 {
-    qDebug() << str << '\n';
+    QTextStream(stdout) << str << '\n';
 }
-*/
+
