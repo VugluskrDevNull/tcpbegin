@@ -2,6 +2,7 @@
 #include "console.h"
 #include <QString>
 #include <QDebug>
+#include <QTextStream>
 
 Console::Console()
 {
