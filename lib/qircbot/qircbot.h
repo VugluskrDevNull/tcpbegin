@@ -64,6 +64,7 @@ public :
          void disconnected();
          void readyRead();
          void send(QString );
+         void consoleInput(QString );
 };
 
 #endif

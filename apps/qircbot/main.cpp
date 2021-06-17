@@ -12,11 +12,13 @@ int main(int argc, char *argv[])
 #endif
     QCoreApplication a(argc, argv);
         Bot * bot= new Bot;
+        Console * cons = new Console;
         GameTimeBomb * game = new GameTimeBomb (bot);
         if (!(bot->connect()))
             return  1;
         QObject::connect(bot, SIGNAL (userInput(QString)), game,  SLOT(userInput(QString)));  //  запуск игры онлайн
         QObject::connect(game, SIGNAL (send(QString)), bot,  SLOT(send(QString)));           // send как слoт
+        QObject::connect(cons, SIGNAL (userInput(QString)), bot,  SLOT(consoleInput(QString)));            // пишем в чат через консоль
         return a.exec();
 }
 
