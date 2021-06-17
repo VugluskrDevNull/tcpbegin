@@ -22,6 +22,7 @@ public:
 signals:
     void quit();
     void userInput(QString);
+
 private:
 
 #ifdef Q_OS_WIN
@@ -33,8 +34,8 @@ private:
 
 private slots:
     void readCommand();
-signals:
-     void send(QString);
+    void send(QString);
+
 };
 
 #endif // CONSOLE_H
