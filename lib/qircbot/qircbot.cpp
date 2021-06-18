@@ -169,7 +169,6 @@ void Bot::channel_msg(const QString *msg)
              /*******************************************************************************************************/
              QStringRef msg(&s, n1 + 1, (*it).length() - n1 - 2); // - 2: remove \r\n in the end удаляем : и \r
              emit userInput(msg.toString());                                              // запуск игры со строкой без : и \r
-             emit consoleInput(msg.toString());
              /*******************************************************************************************************/
            // qDebug()<<"msg -"<<msg<<endl;           // qdebug  msg
               QStringList header_fields;
