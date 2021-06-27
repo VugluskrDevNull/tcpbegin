@@ -3,7 +3,7 @@ QT += network
 
 CONFIG -= app_bundle
 CONFIG += c++1z console
-CONFIG += link_prl
+CONFIG += link_prl utf8_source
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -33,6 +33,10 @@ INCLUDEPATH += \
 LIBS += \
     -L../.. \
     -lcommon -ltimebomb
+
+#PRE_TARGETDEPS += \
+#    ../../libtimebomb.a \
+#    ../../libcommon.a
 
 HEADERS += \
     ../../common/Interface.h \

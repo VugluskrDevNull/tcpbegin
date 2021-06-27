@@ -7,6 +7,7 @@
 #ifdef Q_OS_WIN
 #include <QWinEventNotifier>
 #include <windows.h>
+#include <fcntl.h>
 #else
 #include <QSocketNotifier>
 #endif
