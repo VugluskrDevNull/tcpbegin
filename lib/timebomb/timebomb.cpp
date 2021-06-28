@@ -63,7 +63,7 @@ void GameTimeBomb::start_game()
     for (int i=0; i<n; i++)
     {
         s += " ";
-        s += provodki[i];
+        s += provodki_rand[i];
         s += " ";
     }
     emit send(s);
