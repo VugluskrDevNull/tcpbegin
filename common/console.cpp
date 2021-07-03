@@ -12,26 +12,32 @@ Console::Console()
     _setmode(_fileno(stdout), _O_U8TEXT);
 
     m_notifier = new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE));
+
+    QObject::connect(
+            this, &Console::finishedGetLine,
+            this, &Console::on_finishedGetLine,
+            Qt::QueuedConnection
+    );
+
     connect(m_notifier, &QWinEventNotifier::activated
 #else
     m_notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
     connect(m_notifier, &QSocketNotifier::activated
 #endif
         , this, &Console::readCommand);
+
+    m_notifier->moveToThread(&m_thread);      // 30.06
+
+    QObject::connect(                          //30.06
+            &m_thread , &QThread::finished,
+            m_notifier, &QObject::deleteLater
+    );
 }
 
 void Console::run()
 {
     send("> ");
 }
-
-/*
-1 офлайн не работает взрыв - проблема  QWinEventNofifier
- 2 онлайн требуется ввод символа для запуска бота - это QWinEventNofifier
- 3 онлайн не работает реакция на цвет -  fgetws
- 4  офлайн срабатывает goodbuy вместо win -  fgetws     // решаем
- 5 офлайн не работает send("readCommand()  - неясного происхождения
- */
 
 
 void Console::readCommand()
@@ -54,10 +60,14 @@ void Console::readCommand()
     #endif
         send (res);
         send ("\n");
-        emit userInput(res);
+        emit finishedGetLine(res);     // 30.06
 
 }
 
+void Console::on_finishedGetLine(const QString &strNewLine)     // 30.06
+{
+    Q_EMIT this->userInput(strNewLine);
+}
 
 void Console::send(QString str)
 {

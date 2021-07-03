@@ -3,6 +3,7 @@
 #pragma once                                   // console.h
 
 #include <QObject>
+#include <QThread>
 #include "Interface.h"
 #ifdef Q_OS_WIN
 #include <QWinEventNotifier>
@@ -25,7 +26,7 @@ signals:
     void userInput(QString);
 
 private:
-
+    QThread m_thread;                                         // 30 06
 #ifdef Q_OS_WIN
     QWinEventNotifier *m_notifier;
 #else
@@ -36,7 +37,11 @@ private:
 private slots:
     void readCommand();
     void send(QString);
+    void on_finishedGetLine(const QString &);
 
+Q_SIGNALS:
+    // finishedGetLine if for internal use                     // 30 06
+    void finishedGetLine(const QString &strNewLine);           // 30 06
 };
 
 #endif // CONSOLE_H
