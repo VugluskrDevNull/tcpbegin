@@ -33,7 +33,6 @@ private:
     QSocketNotifier *m_notifier;
 #endif
 
-
 private slots:
     void readCommand();
     void send(QString);

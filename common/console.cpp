@@ -27,7 +27,7 @@ Console::Console()
         , this, &Console::readCommand);
 
     m_notifier->moveToThread(&m_thread);      // 30.06
-
+    m_thread.start();                         // 30.06
     QObject::connect(                          //30.06
             &m_thread , &QThread::finished,
             m_notifier, &QObject::deleteLater
