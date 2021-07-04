@@ -38,7 +38,7 @@ private slots:
     void send(QString);
     void on_finishedGetLine(const QString &);
 
-Q_SIGNALS:
+signals:
     // finishedGetLine if for internal use                     // 30 06
     void finishedGetLine(const QString &strNewLine);           // 30 06
 };

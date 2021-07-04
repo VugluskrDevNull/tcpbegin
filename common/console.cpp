@@ -6,6 +6,12 @@
 
 Console::Console()
 {
+    QObject::connect(
+            this, &Console::finishedGetLine,
+            this, &Console::on_finishedGetLine,
+            Qt::QueuedConnection
+    );
+
 #ifdef Q_OS_WIN
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
@@ -13,25 +19,21 @@ Console::Console()
 
     m_notifier = new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE));
 
+    // NOTE : move to thread because std::getline blocks,
+    //        then we sync with main thread using a QueuedConnection with finishedGetLine
+    m_notifier->moveToThread(&m_thread);
     QObject::connect(
-            this, &Console::finishedGetLine,
-            this, &Console::on_finishedGetLine,
-            Qt::QueuedConnection
+            &m_thread , &QThread::finished,
+            m_notifier, &QObject::deleteLater
     );
-
+    m_thread.start();
     connect(m_notifier, &QWinEventNotifier::activated
 #else
-    m_notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
+    m_notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read);
     connect(m_notifier, &QSocketNotifier::activated
 #endif
         , this, &Console::readCommand);
 
-    m_notifier->moveToThread(&m_thread);      // 30.06
-    m_thread.start();                         // 30.06
-    QObject::connect(                          //30.06
-            &m_thread , &QThread::finished,
-            m_notifier, &QObject::deleteLater
-    );
 }
 
 void Console::run()
@@ -42,31 +44,31 @@ void Console::run()
 
 void Console::readCommand()
 {
-    #ifdef Q_OS_WIN32
-      const int bufsize = 512;
-      wchar_t buf[bufsize];
-      DWORD read;
-      QString res;
-      do {
-        ReadConsoleW(GetStdHandle(STD_INPUT_HANDLE),
-            buf, bufsize, &read, NULL);
-        res += QString::fromWCharArray(buf, read);
-      } while (read > 0 && res[res.length() - 1] != '\n');
-      while (res.length() > 0
-             && (res[res.length() - 1] == '\r' || res[res.length() - 1] == '\n'))
-        res.truncate(res.length() - 1);
-      #else
-      return QTextStream::readLine();
-    #endif
-        send (res);
-        send ("\n");
-        emit finishedGetLine(res);     // 30.06
+    QString res;
+#ifdef Q_OS_WIN32
+    const int bufsize = 512;
+    wchar_t buf[bufsize];
+    DWORD read;
 
+    do {
+      ReadConsoleW(GetStdHandle(STD_INPUT_HANDLE),
+          buf, bufsize, &read, NULL);
+      res += QString::fromWCharArray(buf, read);
+    } while (read > 0 && res[res.length() - 1] != '\n');
+
+    while (res.length() > 0
+           && (res[res.length() - 1] == '\r' || res[res.length() - 1] == '\n'))
+      res.truncate(res.length() - 1);
+#else
+    res = QTextStream(stdin).readLine(0);
+#endif
+    send (res);
+    emit finishedGetLine(res);
 }
 
-void Console::on_finishedGetLine(const QString &strNewLine)     // 30.06
+void Console::on_finishedGetLine(const QString &strNewLine)
 {
-    Q_EMIT this->userInput(strNewLine);
+    emit userInput(strNewLine);
 }
 
 void Console::send(QString str)
