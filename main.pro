@@ -5,13 +5,15 @@ libtimebomb.subdir  = lib/timebomb
 libqircbot.subdir   = lib/qircbot
 timebomb.subdir     = apps/timebomb
 qircbot.subdir      = apps/qircbot
+qircgui.subdir      = apps/qircgui  #add
 
 SUBDIRS = common      \
           libtimebomb \
           libqircbot  \
                       \
           timebomb    \
-          qircbot
+          qircbot     \
+          qircgui                    #add
 
 libtimebomb.depends  = common
 libqircbot.depends   = common

@@ -16,3 +16,5 @@ SOURCES += \
 HEADERS += \
     Interface.h \
     console.h
+
+FORMS +=
