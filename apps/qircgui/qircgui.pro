@@ -20,8 +20,8 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    mainwindow.h
-
+    mainwindow.h \
+    qircbot.h      #add
 FORMS += \
     mainwindow.ui
 
@@ -29,3 +29,21 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+QMAKE_EXTRA_TARGETS += before_build makefilehook
+
+DESTDIR = ../..
+
+INCLUDEPATH += \
+    ../../common \
+    ../../lib/timebomb \
+    ../../lib/qircbot
+
+LIBS += \
+    -L../.. \
+    -lcommon -lqircbot -ltimebomb
+
+HEADERS += \
+    ../../common/Interface.h \
+    qircbot.h \
+    qircbot.h      #add
