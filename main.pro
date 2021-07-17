@@ -15,7 +15,7 @@ SUBDIRS = common      \
           qircbot     \
           qircgui                    #add
 
-libtimebomb.depends  = common
 libqircbot.depends   = common
 timebomb.depends     = common libtimebomb
 qircbot.depends      = common libqircbot
++qircgui.depends      = common libqircbot libtimebomb

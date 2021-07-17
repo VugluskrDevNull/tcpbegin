@@ -7,24 +7,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
+    Bot * bot= new Bot;
+    GameTimeBomb * game = new GameTimeBomb (bot);
+    QObject::connect(bot, SIGNAL (userInput(QString)), game,  SLOT(userInput(QString)));
     w.show();
-    Bot bot;
-    GameTimeBomb game;
-     QObject::connect();
     return a.exec();
 }
 
-/*
-в  "локальном мейн гуйки" ты создашь объект Bot и игры, соединишь их вместе, а потом соединишь Bot-а и gui с помощью сигналов,
-так же как в qircbot соединял
- с Console
-весь основной функционал бота и timebomb находитя в библиотеках в директории lib/
-всё что находится в apps это по сути подключение этих библиотек (в разных комбинациях) и соединения их сигналами. ВСЁ. н
-е более того
-поэтому когда ты говоришь про "встраивание ircbot-а и timebomb в qircgui, то надо подключить эти библиотеки и соединить их
- сигналами между собой и между gui
- в "мейн гуя" у тебя есть указатели на бота и игру. но куда они указывают?
- нужно создать в "мейн гуя" объект от класса Bot и объект от класса GameTimeBomb, и эти указатели будут на них указывать
- всё через сигналы. сигналы соедиют объекты
-*/
+
 
