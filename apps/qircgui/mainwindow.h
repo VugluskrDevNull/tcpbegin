@@ -19,5 +19,7 @@ private:
     Ui::MainWindow *ui;
 private slots :
     void sendmsg ();
+signals :
+void send(QString);
 };
 #endif // MAINWINDOW_H

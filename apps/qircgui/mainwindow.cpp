@@ -17,5 +17,5 @@ MainWindow::~MainWindow()
 
 void MainWindow :: sendmsg ()
 {
-     Bot::send(ui->lineEdit->text());
+    emit send(ui->lineEdit->text());
 }

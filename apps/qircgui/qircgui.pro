@@ -21,7 +21,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
-    qircbot.h      #add
+    qircbot.h
 FORMS += \
     mainwindow.ui
 
@@ -46,4 +46,4 @@ LIBS += \
 HEADERS += \
     ../../common/Interface.h \
     qircbot.h \
-    qircbot.h      #add
+    qircbot.h
