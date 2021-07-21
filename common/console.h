@@ -26,7 +26,7 @@ signals:
     void userInput(QString);
 
 private:
-    QThread m_thread;                                         // 30 06
+    QThread m_thread;
 #ifdef Q_OS_WIN
     QWinEventNotifier *m_notifier;
 #else
@@ -39,8 +39,8 @@ private slots:
     void on_finishedGetLine(const QString &);
 
 signals:
-    // finishedGetLine if for internal use                     // 30 06
-    void finishedGetLine(const QString &strNewLine);           // 30 06
+    // finishedGetLine if for internal use
+    void finishedGetLine(const QString &strNewLine);
 };
 
 #endif // CONSOLE_H

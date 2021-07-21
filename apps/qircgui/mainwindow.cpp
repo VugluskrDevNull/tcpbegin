@@ -7,8 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(sendmsg()));
-}
+    QObject::connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(sendmsg()));  // связь события нажатия и отсылки строки в чат
+ }
 
 MainWindow::~MainWindow()
 {
@@ -17,5 +17,6 @@ MainWindow::~MainWindow()
 
 void MainWindow :: sendmsg ()
 {
-    emit send(ui->lineEdit->text());
+    emit send(ui->lineEdit->text());   // реализация отсылки строки в чат
 }
+

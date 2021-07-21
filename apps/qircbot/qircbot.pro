@@ -31,8 +31,7 @@ DESTDIR = ../..
 INCLUDEPATH += \
     ../../common \
     ../../lib/timebomb \
-    ../../lib/qircbot  \
-    ../../apps/qircgui                     #add
+    ../../lib/qircbot
 LIBS += \
     -L../.. \
     -lcommon -lqircbot -ltimebomb

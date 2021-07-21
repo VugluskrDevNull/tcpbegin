@@ -20,6 +20,6 @@ private:
 private slots :
     void sendmsg ();
 signals :
-void send(QString);
+    void send(QString);
 };
 #endif // MAINWINDOW_H

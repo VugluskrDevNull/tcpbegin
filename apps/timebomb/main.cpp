@@ -8,7 +8,7 @@
 #include <QTime>
 
 #include "console.h"
-#include "Interface.h"        //
+//#include "Interface.h"        //
 #include <timebomb.h>
 
 int main(int argc, char** argv)
