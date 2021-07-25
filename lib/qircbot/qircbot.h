@@ -58,7 +58,9 @@ public :
     void channel_msg(const QString *msg);
 
     signals:
-        void userInput(QString);
+        void channelMessage(QString);
+        void statusMessage(QString);
+        void debugMessage(QString);
 
     public slots :
          void disconnected();
