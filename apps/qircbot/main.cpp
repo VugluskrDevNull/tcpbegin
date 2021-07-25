@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     Console * cons = new Console;
     if (!(bot->connect()))
         return  1;
-    QObject::connect(bot, SIGNAL (userInput(QString)), game,  SLOT(userInput(QString)));  //  запуск игры онлайн
+    QObject::connect(bot, SIGNAL (channelMessage(QString)), game,  SLOT(userInput(QString)));  //  запуск игры онлайн
     QObject::connect(game, SIGNAL (send(QString)), bot,  SLOT(send(QString)));           // сообщения от игры к боту
  //   QObject::connect(cons, SIGNAL (userInput(QString)), bot,  SLOT(consoleInput(QString)));            // пишем в чат через консол
     return a.exec();
