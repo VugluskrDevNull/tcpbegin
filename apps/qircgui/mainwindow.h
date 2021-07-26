@@ -18,8 +18,13 @@ public:
 private:
     Ui::MainWindow *ui;
 private slots :
-    void sendmsg ();
+    void sendChannelMessage();
+#if 0
+    void addChannelLog(const QString &text);
+    void addStatusLog(const QString &text);
+    void addDebugLog(const QString &text);
+#endif
 signals :
-    void send(QString);
+    void sendChannelMessage(QString);
 };
 #endif // MAINWINDOW_H

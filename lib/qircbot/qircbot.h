@@ -12,6 +12,7 @@
 #define DEFAULT_NICK "test_bot"
 #define DEFAULT_CHAN "#ruschat"
 
+
 struct BotConfig
 {
     QString ser;
@@ -59,7 +60,9 @@ public :
 
     signals:
         void userInput(QString);
-
+        void debugMessage(QString);
+        void statusMessage(QString);
+        void channelMessage(QString);
     public slots :
          void disconnected();
          void readyRead();

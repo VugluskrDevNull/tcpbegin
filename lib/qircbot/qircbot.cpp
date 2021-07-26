@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <QSettings>
 
 #include <qircbot.h>
@@ -155,7 +155,7 @@ void Bot::channel_msg(const QString *msg)
      for (it = list.begin(); it!=list.end(); ++it)
      {
          QString s = *it;
-         qDebug() << "<<" << s;
+         emit debugMessage(QString("<<") + s);
          int n0=s.indexOf(':');                  // ищем 0е :
          if (s[0] != ':')
              continue;    //qDebug()<<"s[0] -"<<s[0]<<endl;  //
@@ -168,7 +168,7 @@ void Bot::channel_msg(const QString *msg)
            //  QStringRef msg(&s, n1, (*it).length()-n1);
              /*******************************************************************************************************/
              QStringRef msg(&s, n1 + 1, (*it).length() - n1 - 2); // - 2: remove \r\n in the end удаляем : и \r
-             emit userInput(msg.toString());                                              // запуск игры со строкой без : и \r
+             emit statusMessage(msg.toString());                                              // запуск игры со строкой без : и \r
              /*******************************************************************************************************/
            // qDebug()<<"msg -"<<msg<<endl;           // qdebug  msg
               QStringList header_fields;
@@ -179,12 +179,14 @@ void Bot::channel_msg(const QString *msg)
               int type = header_fields[1].toInt(&ok, 10);
               if ((header_fields[0].indexOf(server) != -1) && type == 20 && (header_fields[2].indexOf(server) != -1)) {
                   //исключение для 1 строки где нет nick
-                  qDebug() << "!! type: " << type << "reply form server: " << msg;
+                  emit debugMessage(QString("!! type: %1").arg(type) + " reply form server: " + msg);
+                  emit statusMessage(msg.toString());
                   send_raw("NICK "+ nick +"\n");
                   send_raw("USER qwert_zaq 8 x : qwert_zaq\n");
               } else if ((header_fields[0].indexOf(server) != -1) && ok && (header_fields[2].indexOf(nick) != -1)) {
-                  qDebug() << "!! type: " << type << "reply form server: " << msg;
-
+                  emit debugMessage(QString("!! type: %1").arg(type) + " reply form server: " + msg);
+                  emit statusMessage(msg.toString());
+                  
                   switch (type)
                   {
                       case 1 :
@@ -192,13 +194,14 @@ void Bot::channel_msg(const QString *msg)
                           break;
                   }
               } else if (header_fields[1].indexOf("JOIN") != -1 && msg.indexOf(channel) != -1) {
-                  qDebug() << "!! joined to " << msg;
+                  emit debugMessage(QString(" !! joined to ")  + msg);
+                  emit statusMessage(msg.toString());
                   send_raw("PRIVMSG " + channel + " :здрасти!\n");
               } else if (header_fields[1].indexOf("PRIVMSG") != -1 && header_fields[2].indexOf(channel) != -1) {
-                  qDebug() << "!! channel msg: " << msg;
+                  emit channelMessage(msg.toString());
                   channel_msg(msg.string());
               }  else {
-                  qDebug()<<"!! cannot parse\n";
+                  emit debugMessage(QString("?? unknown: ") + msg);                  
               }
            }
       }
