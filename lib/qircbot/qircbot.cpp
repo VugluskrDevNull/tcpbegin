@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <QSettings>
 
 #include <qircbot.h>
@@ -25,10 +25,10 @@ bool Bot::connect()
     //    soc->connectToHost("127.0.0.1", 4567);                                 // lochost
     if (!socket->waitForConnected(1000))
     {
-        qDebug() << "Not Connected";
+        emit statusMessage("Not Connected");
         return 0;
     }
-    qDebug() << "Connected";
+    emit statusMessage("Connected");
     return  1;
 }
 
@@ -168,7 +168,7 @@ void Bot::channel_msg(const QString *msg)
            //  QStringRef msg(&s, n1, (*it).length()-n1);
              /*******************************************************************************************************/
              QStringRef msg(&s, n1 + 1, (*it).length() - n1 - 2); // - 2: remove \r\n in the end удаляем : и \r
-             emit statusMessage(msg.toString());                                              // запуск игры со строкой без : и \r
+             //emit statusMessage(msg.toString());                 // запуск игры со строкой без : и \r
              /*******************************************************************************************************/
            // qDebug()<<"msg -"<<msg<<endl;           // qdebug  msg
               QStringList header_fields;
@@ -186,7 +186,7 @@ void Bot::channel_msg(const QString *msg)
               } else if ((header_fields[0].indexOf(server) != -1) && ok && (header_fields[2].indexOf(nick) != -1)) {
                   emit debugMessage(QString("!! type: %1").arg(type) + " reply form server: " + msg);
                   emit statusMessage(msg.toString());
-                  
+
                   switch (type)
                   {
                       case 1 :
@@ -194,14 +194,16 @@ void Bot::channel_msg(const QString *msg)
                           break;
                   }
               } else if (header_fields[1].indexOf("JOIN") != -1 && msg.indexOf(channel) != -1) {
-                  emit debugMessage(QString(" !! joined to ")  + msg);
+                  emit debugMessage(QString("!! joined to ") + msg);
                   emit statusMessage(msg.toString());
                   send_raw("PRIVMSG " + channel + " :здрасти!\n");
               } else if (header_fields[1].indexOf("PRIVMSG") != -1 && header_fields[2].indexOf(channel) != -1) {
-                  emit channelMessage(msg.toString());
+                  int n2=s.indexOf('!', n0+1);            // выделяем ник
+                  QStringRef _nick(&s, n0, n2-n0);
+                  emit channelMessage(_nick.toString(), msg.toString());        // channelMessage(nick + msg.toString());
                   channel_msg(msg.string());
               }  else {
-                  emit debugMessage(QString("?? unknown: ") + msg);                  
+                  emit debugMessage(QString("?? unknown: ") + msg);
               }
            }
       }

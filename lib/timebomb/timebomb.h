@@ -23,7 +23,7 @@ class GameTimeBomb: public QObject
     }
     private slots:
     void slotTimerAlarm();
-    void userInput(QString);
+    void userInput(QString, QString);
     void quit();
     signals :
     void send(QString);

@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 #include "qircbot.h"
 #include "ui_mainwindow.h"
 
@@ -7,8 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //QObject::connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChannelMessage()));  // связь события нажатия и отсылки строки в чат
-      QObject::connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(sendChannelMessage()));  // связь события нажатия и отсылки строки в чат
+    QObject::connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChannelMessage()));  // связь события нажатия и отсылки строки в чат
  }
 
 MainWindow::~MainWindow()
@@ -16,24 +15,24 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow :: sendChannelMessage()
+void MainWindow::sendChannelMessage()
 {
-    emit sendChannelMessage(ui->lineEdit->text());   // реализация отсылки строки в чат
-}
-#if 0
-void MainWindow :: addChannelLog(const QString & text)
-{
- //   ui->channelLogView->appendPlainText(text);
+    emit sendChannelMessage(ui->userInputEdit->text());   // реализация отсылки строки в чат
 }
 
-void MainWindow :: addStatusLog(const QString & text)
+void MainWindow::addChannelLog(QString & nick, const QString &text)
 {
- //   ui->statusLogView->appendPlainText(text);
+  //  ui->channelLogView->appendPlainText(nick);
+    ui->channelLogView->appendPlainText(text);
+
 }
 
-void MainWindow :: addDebugLog(const QString & text)
+void MainWindow::addStatusLog(const QString &text)
 {
- //   ui->debugLogView->appendPlainText(text);
+    ui->statusLogView->appendPlainText(text);
 }
-#endif
+
+void MainWindow::addDebugLog(const QString &text)
+{
+    ui->debugLogView->appendPlainText(text);
+}

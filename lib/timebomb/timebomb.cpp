@@ -16,7 +16,7 @@ void GameTimeBomb::slotTimerAlarm()
 }
 
 
-void GameTimeBomb::userInput(QString qs)
+void GameTimeBomb::userInput(QString qs0, QString qs)
 {
     if(qs.indexOf("!bomb")!=-1)                    // проверка ввода
     {

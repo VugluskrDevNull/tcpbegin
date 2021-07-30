@@ -12,7 +12,7 @@ public:
     virtual   void send(QString)=0;
 signals:
     void quit();
-    void userInput(QString);
+    void userInput(QString, QString);
 };
 
 #endif // INTERFACE_H
