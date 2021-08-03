@@ -58,7 +58,7 @@ public :
     void channel_msg(const QString *msg);
 
     signals:
-        void channelMessage(QString, QString);
+        void channelMessage( const QString &, const  QString &);
         void statusMessage(QString);
         void debugMessage(QString);
 

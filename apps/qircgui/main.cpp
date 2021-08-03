@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     // соединение бота с гуи
     QObject::connect(&w,  SIGNAL(sendChannelMessage(QString)), bot,  SLOT(send(QString)));
-    QObject::connect(bot, SIGNAL(channelMessage(QString, QString)),     &w,   SLOT(addChannelLog(QString, QString)));
+    QObject::connect(bot, SIGNAL(channelMessage(QString , QString )),     &w,   SLOT(addChannelLog(QString , QString )));
     QObject::connect(bot, SIGNAL(statusMessage(QString)),      &w,   SLOT(addStatusLog(QString)));
     QObject::connect(bot, SIGNAL(debugMessage(QString)),       &w,   SLOT(addDebugLog(QString)));
     w.show();

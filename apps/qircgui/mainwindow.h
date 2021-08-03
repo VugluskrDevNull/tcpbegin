@@ -19,7 +19,7 @@ private:
     Ui::MainWindow *ui;
 private slots :
     void sendChannelMessage();
-    void addChannelLog(QString & s, const QString &text);
+    void addChannelLog(const QString & s, const QString & text);
     void addStatusLog(const QString &text);
     void addDebugLog(const QString &text);
 signals :

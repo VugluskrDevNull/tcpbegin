@@ -20,9 +20,9 @@ void MainWindow::sendChannelMessage()
     emit sendChannelMessage(ui->userInputEdit->text());   // реализация отсылки строки в чат
 }
 
-void MainWindow::addChannelLog(QString & nick, const QString &text)
+void MainWindow::addChannelLog(const QString & nick, const QString & text)
 {
-  //  ui->channelLogView->appendPlainText(nick);
+    ui->channelLogView->appendPlainText(nick);
     ui->channelLogView->appendPlainText(text);
 
 }
